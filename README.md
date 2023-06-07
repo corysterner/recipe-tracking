@@ -16,16 +16,16 @@
   
 The above directions assume Windows Command Line. These are the commnands I ran using Powershell:
 ```
-PS E:\UserFolders\Ethan\projects\JavaFX\samples-master\HelloFX\CLI\hellofx> $Env:PATH_TO_FX='E:\UserFolders\Ethan\Downloads\openjfx-17.0.7_windows-x64_bin-sdk\javafx-sdk-17.0.7\lib'
+$Env:PATH_TO_FX='E:\UserFolders\Ethan\Downloads\openjfx-17.0.7_windows-x64_bin-sdk\javafx-sdk-17.0.7\lib'
 ```
 Use this to check that the path is set correctly:
 ```
-PS E:\UserFolders\Ethan\projects\JavaFX\samples-master\HelloFX\CLI\hellofx> dir env:
+dir env:
 ```
 Build and Run:
 ```
-PS E:\UserFolders\Ethan\projects\JavaFX\samples-master\HelloFX\CLI\hellofx> javac --module-path $Env:PATH_TO_FX --add-modules javafx.controls HelloFX.java
+javac --module-path $Env:PATH_TO_FX --add-modules javafx.controls HelloFX.java
 ```
 ```
-PS E:\UserFolders\Ethan\projects\JavaFX\samples-master\HelloFX\CLI\hellofx> java --module-path $Env:PATH_TO_FX --add-modules javafx.controls HelloFX
+java --module-path $Env:PATH_TO_FX --add-modules javafx.controls HelloFX
 ```
