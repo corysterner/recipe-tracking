@@ -1,4 +1,3 @@
-# recipe-tracking
 # Getting Started
 ## Setup Java 17 JDK
 ### Download Java 17
