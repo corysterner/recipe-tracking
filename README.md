@@ -35,3 +35,6 @@ java --module-path $Env:PATH_TO_FX --add-modules javafx.controls HelloFX
 ## MySQL Java Driver
 - The jar file is already committed to the repository in src/lib/
 - The driver came from here: https://dev.mysql.com/downloads/connector/j/
+## IntelliJ Community Edition
+- Download from here: https://www.jetbrains.com/idea/download/#section=windows
+- Install
