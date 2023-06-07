@@ -14,7 +14,7 @@
 - Follow the directions here to unzip and make available: https://openjfx.io/openjfx-docs/#install-javafx
 - Use Powershell to run the commands (on Windows)
   
-The above directions assume Windows Command Line. These are the commnands I ran using Powershell:
+The above directions assume Windows Command Line. These are the commands I ran using Powershell:
 ```
 $Env:PATH_TO_FX='E:\UserFolders\Ethan\Downloads\openjfx-17.0.7_windows-x64_bin-sdk\javafx-sdk-17.0.7\lib'
 ```
