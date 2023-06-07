@@ -3,6 +3,7 @@
 ## Setup Java 17 JDK
 ### Download Java 17
 - Download from here (I'd recommend the "installer" version): https://www.oracle.com/java/technologies/downloads/#java17
+- Install Java using the installer
 ## Setup JavaFX
 ### Download JavaFX
 - Download from here using the below criteria (assuming Windows): https://gluonhq.com/products/javafx/
