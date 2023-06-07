@@ -10,21 +10,28 @@
 - OS: Windows
 - Arch: Your Choice (I used x64)
 - Type: SDK
-### Unzip JavaFX
+### Unzip JavaFX and Test with HelloWorld
 - Follow the directions here to unzip and make available: https://openjfx.io/openjfx-docs/#install-javafx
-  
-The above directions assume Windows Command Line. These are the commands I ran using Powershell:
+- Download the code from here: https://github.com/openjfx/samples/tree/master
+- The above directions assume Windows Command Line. These are the commands I ran using Powershell:
 ```
 $Env:PATH_TO_FX='E:\UserFolders\Ethan\Downloads\openjfx-17.0.7_windows-x64_bin-sdk\javafx-sdk-17.0.7\lib'
 ```
-Use this to check that the path is set correctly:
+- Use this to check that the path is set correctly:
 ```
 dir env:
 ```
-Build and Run:
+- Move into the correct directory - should end in: 'samples-master\HelloFX\CLI\hellofx'
+- Build and Run:
 ```
 javac --module-path $Env:PATH_TO_FX --add-modules javafx.controls HelloFX.java
 ```
 ```
 java --module-path $Env:PATH_TO_FX --add-modules javafx.controls HelloFX
 ```
+## MySQL
+- Download MySQL Installer from here: https://dev.mysql.com/downloads/installer/
+- Install MySQL (I just used the Developer Default which will probably add a bunch of unnecessary stuff, but oh well)
+## MySQL Java Driver
+- The jar file is already committed to the repository in src/lib/
+- The driver came from here: https://dev.mysql.com/downloads/connector/j/
