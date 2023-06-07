@@ -29,6 +29,8 @@ javac --module-path $Env:PATH_TO_FX --add-modules javafx.controls HelloFX.java
 java --module-path $Env:PATH_TO_FX --add-modules javafx.controls HelloFX
 ```
 ## MySQL
+- Download MySQL Installer from here: https://dev.mysql.com/downloads/installer/
+- Install MySQL (I just used the Developer Default which will probably add a bunch of unnecessary stuff, but oh well)
 ## MySQL Java Driver
 - The jar file is already committed to the repository in src/lib/
 - The driver came from here: https://dev.mysql.com/downloads/connector/j/
