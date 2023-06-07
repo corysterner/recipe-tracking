@@ -3,7 +3,7 @@
 ## Install Java 17 JDK
 ## Download JavaFX
 ### Download JavaFX
-- Download from here using the below criteria (assumin Windows): https://gluonhq.com/products/javafx/
+- Download from here using the below criteria (assuming Windows): https://gluonhq.com/products/javafx/
 - Version: 17.0.7
 - OS: Windows
 - Arch: Your Choice (I used x64)
