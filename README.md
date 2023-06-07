@@ -12,7 +12,6 @@
 - Type: SDK
 ### Unzip JavaFX
 - Follow the directions here to unzip and make available: https://openjfx.io/openjfx-docs/#install-javafx
-- Use Powershell to run the commands (on Windows)
   
 The above directions assume Windows Command Line. These are the commands I ran using Powershell:
 ```
