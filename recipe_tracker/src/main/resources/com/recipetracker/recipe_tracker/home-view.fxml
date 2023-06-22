@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.recipetracker.recipe_tracker.HomeController">
+   <children>
+      <Pagination layoutX="50.0" layoutY="50.0" prefHeight="700.0" prefWidth="600.0" />
+      <ListView layoutX="69.0" layoutY="50.0" prefHeight="600.0" prefWidth="550.0" />
+      <ButtonBar layoutX="756.0" layoutY="75.0" />
+      <ComboBox layoutX="650.0" layoutY="139.0" prefWidth="200.0" promptText="Category" />
+      <Button layoutX="650.0" layoutY="50.0" mnemonicParsing="false" text="+ Create" />
+      <TextField layoutX="650.0" layoutY="95.0" prefHeight="25.0" prefWidth="200.0" promptText="Search Recipes Names" />
+      <ScrollPane fitToWidth="true" layoutX="650.0" layoutY="217.0" prefHeight="432.0" prefWidth="480.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1200.0" prefWidth="200.0">
+               <children>
+                  <Label layoutX="17.0" layoutY="43.0" prefHeight="80.0" prefWidth="450.0" text="Select Recipe from List" wrapText="true">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="17.0" layoutY="132.0" prefHeight="23.0" prefWidth="72.0" text="Categories: " />
+                  <Label layoutX="22.0" layoutY="175.0" prefHeight="600.0" prefWidth="62.0" text="Instructions" />
+                  <Label layoutX="17.0" layoutY="112.0" prefHeight="721.0" prefWidth="28.0" text="Label" />
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>
