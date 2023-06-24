@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.recipetracker.recipe_tracker.HomeController">
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.recipetracker.recipe_tracker.HomeController">
    <children>
-      <Pagination layoutX="50.0" layoutY="50.0" prefHeight="700.0" prefWidth="600.0" />
-      <ListView layoutX="69.0" layoutY="50.0" prefHeight="600.0" prefWidth="550.0" />
-      <ButtonBar layoutX="756.0" layoutY="75.0" />
-      <ComboBox layoutX="650.0" layoutY="139.0" prefWidth="200.0" promptText="Category" />
       <Button layoutX="650.0" layoutY="50.0" mnemonicParsing="false" text="+ Create" />
-      <TextField layoutX="650.0" layoutY="95.0" prefHeight="25.0" prefWidth="200.0" promptText="Search Recipes Names" />
-      <ScrollPane fitToWidth="true" layoutX="650.0" layoutY="217.0" prefHeight="432.0" prefWidth="480.0">
+      <ScrollPane fitToWidth="true" layoutX="650.0" layoutY="100.0" prefHeight="650.0" prefWidth="500.0">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1200.0" prefWidth="200.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1309.0" prefWidth="500.0">
                <children>
                   <Label layoutX="17.0" layoutY="43.0" prefHeight="80.0" prefWidth="450.0" text="Select Recipe from List" wrapText="true">
                      <font>
@@ -28,5 +24,37 @@
             </AnchorPane>
         </content>
       </ScrollPane>
+      <TabPane layoutX="50.0" layoutY="50.0" prefHeight="700.0" prefWidth="550.0" style="-fx-border-width: 1px; -fx-border-color: black;" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+            <Tab text="All Recipes">
+                <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextField fx:id="searchTextAllRecipes" layoutX="25.0" layoutY="15.0" prefHeight="25.0" prefWidth="200.0" promptText="Search Recipes Names" />
+                        <ComboBox fx:id="categoryFilter" layoutX="305.0" layoutY="15.0" prefWidth="100.0" promptText="Category" />
+                        <ComboBox fx:id="ratingFilter" layoutX="415.0" layoutY="15.0" prefWidth="100.0" promptText="Rating" />
+                        <ComboBox fx:id="timeFilter" layoutX="305.0" layoutY="50.0" prefWidth="100.0" promptText="Time" />
+                        <ComboBox fx:id="caloriesFilter" layoutX="415.0" layoutY="50.0" prefWidth="100.0" promptText="Calories" />
+                        <Button layoutX="25.0" layoutY="50.0" mnemonicParsing="false" onAction="#searchAllRecipes" text="Search" />
+                        <Pagination fx:id="allRecipesPagination" layoutX="25.0" layoutY="100.0" prefHeight="550.0" prefWidth="500.0">
+                           <padding>
+                              <Insets top="10.0" />
+                           </padding></Pagination>
+                        <ComboBox fx:id="timeFilter1" layoutX="125.0" layoutY="50.0" prefWidth="100.0" promptText="Sort By" />
+                     </children></AnchorPane>
+                </content>
+            </Tab>
+            <Tab onSelectionChanged="#getMyRecipes" text="My Recipes">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+          <Tab onSelectionChanged="#getMyFavorites" text="Favorites">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
    </children>
 </AnchorPane>
