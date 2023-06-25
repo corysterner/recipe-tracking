@@ -7,5 +7,6 @@ module com.recipetracker.recipe_tracker {
     requires org.kordamp.bootstrapfx.core;
 
     opens com.recipetracker.recipe_tracker to javafx.fxml;
+    requires java.sql;
     exports com.recipetracker.recipe_tracker;
 }

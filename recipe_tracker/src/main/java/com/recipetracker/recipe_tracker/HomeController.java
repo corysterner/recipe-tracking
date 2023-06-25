@@ -4,9 +4,14 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -25,16 +30,18 @@ public class HomeController {
             try{
                 FXMLLoader cardLoader = new FXMLLoader(getClass().getResource("recipe-card.fxml"));
                 AnchorPane cardRoot = cardLoader.load();
+                RecipeCardController cardController = cardLoader.getController();
+
+                cardController.setParentController(this);
+
                 vBox.getChildren().add(cardRoot);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
 
-            //Label recipeTitle = new Label("Recipe " + i);
-            //VBox recipeBox = new VBox(recipeTitle);
-
         }
         ScrollPane scrollPane = new ScrollPane(vBox);
+        scrollPane.setStyle("-fx-background-color: transparent");
         return scrollPane;
     }
     public void searchAllRecipes(ActionEvent actionEvent) {
@@ -45,5 +52,25 @@ public class HomeController {
     }
 
     public void getMyFavorites(Event event) {
+    }
+
+    public void updateSingleRecipe(int recipeId) {
+    }
+
+    public void openCreateModal(ActionEvent actionEvent) {
+
+        Stage stage = new Stage();
+        Parent root = null;
+        try {
+            root = FXMLLoader.load(
+                    CreateModalController.class.getResource("create-modal.fxml"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage.setScene(new Scene(root));
+        stage.setTitle("Create Recipe");
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(allRecipesPagination.getScene().getWindow());
+        stage.showAndWait();
     }
 }
