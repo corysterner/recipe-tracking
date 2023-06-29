@@ -17,32 +17,30 @@ import java.io.IOException;
 
 public class HomeController {
     public TextField searchTextAllRecipes;
-    public ComboBox categoryFilter;
-    public ComboBox ratingFilter;
-    public ComboBox timeFilter;
-    public ComboBox caloriesFilter;
+    public ComboBox<String> categoryFilter;
+    public ComboBox<Integer> ratingFilter;
+    public ComboBox<Integer> timeFilter;
+    public ComboBox<Integer> caloriesFilter;
     public Pagination allRecipesPagination;
 
     public ScrollPane getPages(int pageIndex){
-        VBox vBox = new VBox();
-        for(int i = pageIndex; i < pageIndex + 100; i++){
 
-            try{
-                FXMLLoader cardLoader = new FXMLLoader(getClass().getResource("recipe-card.fxml"));
-                AnchorPane cardRoot = cardLoader.load();
-                RecipeCardController cardController = cardLoader.getController();
+        // Start a new recipe list
+        RecipeList recipeList = new RecipeList();
 
-                cardController.setParentController(this);
+        // Populate recipe list through from search parameters
+        // TODO: sortBy needs to be bound to the component and updated here to get that value.
+        // TODO: see if getValue() is the right way to get these values - if getValue() returns null, there
+        //      seems to be an exception
+        recipeList.performRecipeSearch(20, "name",
+                searchTextAllRecipes.getText() == null ? "" : searchTextAllRecipes.getText(),
+                categoryFilter.getValue() == null ? "" : categoryFilter.getValue(),
+                ratingFilter.getValue() == null ? 0 : ratingFilter.getValue(),
+                timeFilter.getValue() == null ? 0 : timeFilter.getValue(),
+                caloriesFilter.getValue() == null ? 0 : caloriesFilter.getValue());
 
-                vBox.getChildren().add(cardRoot);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
-        }
-        ScrollPane scrollPane = new ScrollPane(vBox);
-        scrollPane.setStyle("-fx-background-color: transparent");
-        return scrollPane;
+        // return the Scrollpane populated with all of the recipe cards
+        return buildScrollPaneOfRecipes(recipeList);
     }
     public void searchAllRecipes(ActionEvent actionEvent) {
         allRecipesPagination.setPageFactory(this::getPages);
@@ -73,5 +71,30 @@ public class HomeController {
         stage.initModality(Modality.WINDOW_MODAL);
         stage.initOwner(allRecipesPagination.getScene().getWindow());
         stage.showAndWait();
+    }
+
+    /**
+     * Builds a Vbox of all the recipes in the list in the order
+     * they're added to the list
+     */
+    public ScrollPane buildScrollPaneOfRecipes(RecipeList recipeList){
+        VBox vBox = new VBox();
+        for (int i = 0; i < recipeList.size(); i++) {
+            try{
+                FXMLLoader cardLoader = new FXMLLoader(getClass().getResource("recipe-card.fxml"));
+                AnchorPane cardRoot = cardLoader.load();
+                RecipeCardController cardController = cardLoader.getController();
+                cardController.setRecipe(recipeList.get(i));
+
+                cardController.setParentController(this);
+
+                vBox.getChildren().add(cardRoot);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        ScrollPane scrollPane = new ScrollPane(vBox);
+        scrollPane.setStyle("-fx-background-color: transparent");
+        return scrollPane;
     }
 }

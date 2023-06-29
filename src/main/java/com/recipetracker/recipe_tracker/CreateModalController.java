@@ -10,6 +10,14 @@ public class CreateModalController {
 
     public void saveAndCloseModal(ActionEvent actionEvent) {
 
+        String queryString = "insert into test_table (string) values ('test')";
+        DbConnector.getDbConnector().createOrUpdateQuery(queryString);
+
+        Stage stage = (Stage) saveButton.getScene().getWindow();
+        stage.close();
+
+        //TODO: DELETE THIS SECTION ONCE DbConnector Working
+        /*
         class MysqlCon{
             public static void query(){
                 try{
@@ -25,8 +33,6 @@ public class CreateModalController {
         }
 
         MysqlCon.query();
-
-        Stage stage = (Stage) saveButton.getScene().getWindow();
-        stage.close();
+        */
     }
 }

@@ -8,5 +8,6 @@ module com.recipetracker.recipe_tracker {
 
     opens com.recipetracker.recipe_tracker to javafx.fxml;
     requires java.sql;
+    requires mysql.connector.j;
     exports com.recipetracker.recipe_tracker;
 }
