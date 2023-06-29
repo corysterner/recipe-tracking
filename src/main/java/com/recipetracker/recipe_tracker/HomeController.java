@@ -55,6 +55,7 @@ public class HomeController {
     }
 
     public void updateSingleRecipe(int recipeId) {
+        // Update the right side scroll pane with this recipe's info
     }
 
     public void openCreateModal(ActionEvent actionEvent) {
