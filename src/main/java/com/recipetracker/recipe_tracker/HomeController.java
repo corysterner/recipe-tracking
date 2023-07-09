@@ -16,6 +16,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class HomeController {
+
+    Integer userId = 0;
     public TextField searchTextAllRecipes;
     public ComboBox<String> categoryFilter;
     public ComboBox<Integer> ratingFilter;
@@ -96,5 +98,10 @@ public class HomeController {
         ScrollPane scrollPane = new ScrollPane(vBox);
         scrollPane.setStyle("-fx-background-color: transparent");
         return scrollPane;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+        searchTextAllRecipes.setText(userId.toString());
     }
 }
