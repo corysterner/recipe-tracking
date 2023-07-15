@@ -10,7 +10,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import org.apache.commons.codec.binary.Hex;
 
 public class LoginController {
     public TextField emailText;
@@ -26,7 +34,7 @@ public class LoginController {
         Integer userId = -1;
 
         // TODO: Hash password - is this the correct hash function? Probably not...
-        String passwordHash = passwordText.getText().hashCode();
+        String passwordHash = hashPassword(passwordText.getText());
 
         // TODO: Query w/ email and password hash to receive userId
 
@@ -56,5 +64,36 @@ public class LoginController {
             stage.setScene(scene);
             stage.show();
         }
+    }
+
+    private String hashPassword(String password) {
+        SecureRandom random = new SecureRandom();
+
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+        System.out.println(salt.toString());
+
+        KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 10000, 512);
+        SecretKeyFactory factory = null;
+        try {
+            factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
+        byte[] hash = new byte[0];
+
+        try {
+            hash = factory.generateSecret(spec).getEncoded();
+        } catch (InvalidKeySpecException e) {
+            throw new RuntimeException(e);
+        }
+
+        //String hashString = null;
+        String hashString = Hex.encodeHexString(hash);
+
+        System.out.println(hashString);
+
+        return hashString;
     }
 }

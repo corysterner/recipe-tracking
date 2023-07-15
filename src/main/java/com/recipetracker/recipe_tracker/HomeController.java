@@ -16,7 +16,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class HomeController {
-
     Integer userId = 0;
     public TextField searchTextAllRecipes;
     public ComboBox<String> categoryFilter;

@@ -16,7 +16,6 @@ public class DbConnector {
     // Private constructor so there's only one of these DbConnector objects
     // We only expect to need to connect to this one DB
     private DbConnector(){
-        // TODO figure out if we need this call at all... not sure what it does
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
