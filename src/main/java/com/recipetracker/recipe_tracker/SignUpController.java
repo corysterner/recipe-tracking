@@ -5,6 +5,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import org.apache.commons.codec.binary.Hex;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 
 public class SignUpController {
     public TextField firstNameText;
@@ -36,5 +44,34 @@ public class SignUpController {
 
         // If email does not exist, send query to insert new user
         // Redirect back to login screen
+    }
+
+    private String hashPassword(String password) {
+        SecureRandom random = new SecureRandom();
+
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+
+        KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 10000, 512);
+        SecretKeyFactory factory = null;
+        try {
+            factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
+        byte[] hash = new byte[0];
+
+        try {
+            hash = factory.generateSecret(spec).getEncoded();
+        } catch (InvalidKeySpecException e) {
+            throw new RuntimeException(e);
+        }
+
+        String hashString = Hex.encodeHexString(hash);
+        String saltString = Hex.encodeHexString(salt);
+
+        // Store as salt:hash so the salt can be retrieved later
+        return saltString + ":" + hashString;
     }
 }

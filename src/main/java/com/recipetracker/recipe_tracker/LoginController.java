@@ -34,6 +34,8 @@ public class LoginController {
         Integer userId = -1;
 
         // TODO: Hash password - is this the correct hash function? Probably not...
+        String saltString = User.getUserSaltStringFromEmail("test@gmail.com" /*emailText.getText()*/);
+        System.out.println(saltString);
         String passwordHash = hashPassword(passwordText.getText());
 
         // TODO: Query w/ email and password hash to receive userId
@@ -71,7 +73,6 @@ public class LoginController {
 
         byte[] salt = new byte[16];
         random.nextBytes(salt);
-        System.out.println(salt.toString());
 
         KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 10000, 512);
         SecretKeyFactory factory = null;
@@ -89,11 +90,10 @@ public class LoginController {
             throw new RuntimeException(e);
         }
 
-        //String hashString = null;
         String hashString = Hex.encodeHexString(hash);
+        String saltString = Hex.encodeHexString(salt);
 
-        System.out.println(hashString);
-
-        return hashString;
+        // Store as salt:hash so the salt can be retrieved later
+        return saltString + ":" + hashString;
     }
 }

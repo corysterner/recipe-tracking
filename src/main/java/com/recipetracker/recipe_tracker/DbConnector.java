@@ -1,9 +1,11 @@
 package com.recipetracker.recipe_tracker;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.sql.rowset.*;
 
 public class DbConnector {
 
@@ -49,16 +51,55 @@ public class DbConnector {
     }
 
     // TODO: This will return something, just not sure on the object type...
-    public void selectQuery(String queryString){
+
+    /**
+     * Select query.
+     *
+     * Returns a CachedRowSet (since the original ResultSet will be lost after the
+     * connection is closed).
+     *
+     * @param queryString
+     * @return
+     */
+    public CachedRowSet selectQuery(String queryString){
+        ResultSet result = null;
+        CachedRowSet crs = null;
+
         try {
             Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
             Statement stmt = con.createStatement();
             // TODO: This is probably a different call(s) that actually return a value
-            stmt.execute(queryString);
+            result = stmt.executeQuery(queryString);
+
+            crs = RowSetProvider.newFactory().createCachedRowSet();
+            crs.populate(result);
+
             con.close();
         } catch (SQLException e){
             System.out.println(e);
         }
+
+        /*
+        List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
+        Map<String, Object> row = null;
+
+        try {
+            ResultSetMetaData metaData = result.getMetaData();
+            Integer columnCount = metaData.getColumnCount();
+
+            while (result.next()) {
+                row = new HashMap<String, Object>();
+                for (int i = 1; i <= columnCount; i++) {
+                    row.put(metaData.getColumnName(i), result.getObject(i));
+                }
+                resultList.add(row);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        */
+
+        return crs;
     }
 
 }
