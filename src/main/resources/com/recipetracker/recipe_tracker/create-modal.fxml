@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import org.controlsfx.control.*?>
 
 <AnchorPane prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.recipetracker.recipe_tracker.CreateModalController">
    <children>
@@ -22,11 +23,11 @@
                            </padding>
                         </Label>
                         <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
-                        <Hyperlink text="Cancel">
+                        <Button style="-fx-background-color: none;" text="Cancel" textFill="#0000ee">
                            <HBox.margin>
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </HBox.margin>
-                        </Hyperlink>
+                        </Button>
                         <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveAndCloseModal" style="-fx-background-color: green;" text="Save" textFill="WHITE">
                            <HBox.margin>
                               <Insets bottom="15.0" left="5.0" right="30.0" top="15.0" />
@@ -106,16 +107,40 @@
                         <Insets bottom="5.0" left="10.0" right="5.0" top="10.0" />
                      </padding>
                   </Label>
-                  <ListView prefHeight="100.0" prefWidth="200.0" translateX="10.0">
+                  <HBox>
+                     <children>
+                        <SearchableComboBox fx:id="categoryComboBox" maxWidth="200.0" prefWidth="200.0">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </SearchableComboBox>
+                        <Button mnemonicParsing="false" onAction="#addCategoryToRecipe" text="+ Add Category">
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
                      <VBox.margin>
-                        <Insets right="20.0" />
-                     </VBox.margin></ListView>
+                        <Insets bottom="5.0" top="5.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <FlowPane fx:id="selectedCatFlowPane" prefHeight="10.0" prefWidth="200.0">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                     <children>
+                        <Label text="Label" />
+                     </children>
+                  </FlowPane>
                   <Label text="Description">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
                      <padding>
-                        <Insets bottom="5.0" left="10.0" right="5.0" top="20.0" />
+                        <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
                      </padding>
                   </Label>
                   <TextArea prefHeight="100.0" prefWidth="400.0" translateX="10.0">
