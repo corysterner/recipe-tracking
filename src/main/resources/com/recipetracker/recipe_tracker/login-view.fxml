@@ -4,7 +4,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
 <GridPane xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.recipetracker.recipe_tracker.LoginController">
    <columnConstraints>
       <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
@@ -13,7 +12,7 @@
       <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <VBox alignment="CENTER" maxWidth="400.0" prefWidth="400.0" spacing="20.0">
+      <VBox fx:id="vbox" alignment="CENTER" maxWidth="400.0" prefWidth="400.0" spacing="20.0">
           <padding>
               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
           </padding>
@@ -22,8 +21,8 @@
           <PasswordField fx:id="passwordText" maxWidth="250.0" prefWidth="250.0" promptText="Password" />
           <ButtonBar prefHeight="40.0" prefWidth="200.0">
               <buttons>
-                  <Hyperlink onAction="#onSignUpLinkClick" text="Sign Up" textAlignment="CENTER" />
-                  <Button onAction="#onLoginButtonClick" text="Login" textAlignment="CENTER" />
+                  <Button cancelButton="true" onAction="#onSignUpLinkClick" style="-fx-background-color: none;" text="Sign Up" textAlignment="CENTER" textFill="#0000ee" />
+                  <Button defaultButton="true" onAction="#onLoginButtonClick" text="Login" textAlignment="CENTER" />
               </buttons>
           </ButtonBar>
       </VBox>

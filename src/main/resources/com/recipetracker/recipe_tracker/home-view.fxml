@@ -7,7 +7,7 @@
 
 <AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.recipetracker.recipe_tracker.HomeController">
    <children>
-      <Button layoutX="650.0" layoutY="50.0" mnemonicParsing="false" onAction="#openCreateModal" text="+ Create" />
+      <Button layoutX="650.0" layoutY="50.0" mnemonicParsing="false" onAction="#openCreateModal" style="-fx-background-color: green;" text="+ Create" textFill="WHITE" />
       <ScrollPane fitToWidth="true" layoutX="650.0" layoutY="100.0" prefHeight="650.0" prefWidth="500.0" style="-fx-border-color: #D3D3D3;">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1309.0" prefWidth="500.0">
@@ -56,5 +56,6 @@
           </Tab>
         </tabs>
       </TabPane>
+      <Button layoutX="1087.0" layoutY="50.0" mnemonicParsing="false" style="-fx-background-color: none;" text="Sign Out" textFill="#0000ee" />
    </children>
 </AnchorPane>

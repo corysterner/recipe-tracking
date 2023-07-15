@@ -23,8 +23,8 @@
           <PasswordField fx:id="passwordText" maxWidth="250.0" prefWidth="250.0" promptText="Password" />
           <ButtonBar prefHeight="40.0" prefWidth="200.0">
               <buttons>
-                  <Hyperlink onAction="#onBackToLoginButtonClick" text="Back to Login" textAlignment="CENTER" />
-                  <Button onAction="#onSignUpButtonClick" text="Sign Up" textAlignment="CENTER" />
+                  <Button cancelButton="true" onAction="#onBackToLoginButtonClick" style="-fx-background-color: none;" text="Back to Login" textAlignment="CENTER" textFill="#0000ee" />
+                  <Button defaultButton="true" onAction="#onSignUpButtonClick" text="Sign Up" textAlignment="CENTER" />
               </buttons>
           </ButtonBar>
       </VBox>
