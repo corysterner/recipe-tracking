@@ -24,4 +24,18 @@ public class Recipe {
         this.name = name;
         this.description = "Description lorem ipsum....";
     }
+
+    public static class Category{
+        int id;
+        String value;
+
+        Category(int id, String value) {
+            this.id = id;
+            this.value = value;
+        }
+
+        public String getCategory(){
+            return value;
+        }
+    }
 }
