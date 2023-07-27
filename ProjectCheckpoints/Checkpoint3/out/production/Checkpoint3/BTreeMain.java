@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+//import java.util.Random;
 
 /**
  * Main Application.
@@ -10,30 +11,34 @@ import java.util.Scanner;
 public class BTreeMain {
 
     public static void main(String[] args) {
-
-        /** Read the input file -- input.txt */
+        //Read the input file -- input.txt
         Scanner scan = null;
         try {
             scan = new Scanner(new File("input.txt"));
         } catch (FileNotFoundException e) {
             System.out.println("File not found.");
+            e.printStackTrace();
+            return;
         }
 
-        /** Read the minimum degree of B+Tree first */
+        /*
+          Read the minimum degree of B+Tree first
+          */
 
         int degree = scan.nextInt();
 
         BTree bTree = new BTree(degree);
 
-        /** Reading the database student.csv into B+Tree Node*/
+        /* Reading the database student.csv into B+Tree Node*/
         List<Student> studentsDB = getStudents();
 
         for (Student s : studentsDB) {
             bTree.insert(s);
         }
 
-        /** Start reading the operations now from input file*/
+        /* Start reading the operations now from input file*/
         try {
+            //Random rand = new Random(); //TODO: determine if I should remove
             while (scan.hasNextLine()) {
                 Scanner s2 = new Scanner(scan.nextLine());
 
@@ -49,8 +54,8 @@ public class BTreeMain {
                             String major = s2.next();
                             String level = s2.next();
                             int age = Integer.parseInt(s2.next());
-                            /** TODO: Write a logic to generate recordID*/
-                            long recordID = 0;
+                            /*TODO Write a logic to generate recordID*/
+                            long recordID = Long.parseLong(s2.next()); //Does this need to be random?
 
                             Student s = new Student(studentId, age, studentName, major, level, recordID);
                             bTree.insert(s);
@@ -77,7 +82,7 @@ public class BTreeMain {
                             break;
                         }
                         case "print": {
-                            List<Long> listOfRecordID = new ArrayList<>();
+                            List<Long> listOfRecordID;
                             listOfRecordID = bTree.print();
                             System.out.println("List of recordIDs in B+Tree " + listOfRecordID.toString());
                         }
@@ -94,11 +99,12 @@ public class BTreeMain {
 
     private static List<Student> getStudents() {
 
-        /** TODO:
+        /*
          * Extract the students information from "Students.csv"
          * return the list<Students>
          */
 
+        //Create scanner
         Scanner scan = null;
         try {
             scan = new Scanner(new File("Student.csv"));
@@ -106,9 +112,10 @@ public class BTreeMain {
             System.out.println("File not found.");
         }
 
+        //Create student list
         List<Student> studentList = new ArrayList<>();
 
-        String line = null;
+        String line;
 
         while (scan.hasNextLine()) {
             line = scan.nextLine();
