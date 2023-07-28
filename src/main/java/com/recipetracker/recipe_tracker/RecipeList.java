@@ -17,16 +17,24 @@ public class RecipeList extends ArrayList<Recipe> {
      * Populates RecipeList with recipes given search parameters
      *
      */
-    public void performRecipeSearch(int numberRecipes, String sortBy, String searchString, String category,
+    public void performRecipeSearch(int numberRecipes, String sortBy, String searchString, int category,
                                     int minRating, int maxTime, int maxCalories){
 
-        for (int i = 0; i < 20; i++){
-            this.add(new Recipe("recipe " + i));
+        String queryString = "select recipeid,name,description from recipes where name like \"%"+searchString+"%\"";
+        if (maxTime>0){
+            queryString = queryString+" AND TotalTime <="+maxTime;
         }
-
-        // TODO: Uncomment/fill in below.
-        String queryString = "<SELECT QUERY>";
-        // TYPE? results = DbConnector.getDbConnector().selectQuery(queryString);
+        if (maxTime>0){
+            queryString = queryString+" AND Calories <="+maxCalories;
+        }
+        if (category > 0) {
+            queryString = queryString+"  AND recipeid IN (select recipeid from recipecategory where categoryid="+category+")";
+        }
+        ArrayList<Recipe> results = DbConnector.getDbConnector().selectQueryShort(queryString);
         // Populate this recipe list with the recipes from the results
+        for (int i = 0; i < results.size();i++) {
+            this.add(new Recipe(results.get(i).id,results.get(i).name,results.get(i).description));
+        }
     }
+
 }

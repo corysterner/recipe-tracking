@@ -59,16 +59,9 @@ public class CreateModalController implements Initializable {
      * Pulls all of the category values from the DB.
      * @return
      */
-    private List<Recipe.Category> getAllCategoryValues() {
-        List<Recipe.Category> catValues = new ArrayList<>();
-
-        // TODO: Update to retrieve category values from DB
-        for(int i = 0; i < 10; i++){
-            catValues.add(new Recipe.Category(i, "Category" + i));
-        }
-
+    public static List<Recipe.Category> getAllCategoryValues() {
+        List<Recipe.Category> catValues = DbConnector.getDbConnector().selectQueryCategory();
         return catValues;
-
     }
 
     /**
