@@ -385,6 +385,11 @@ class BTreeNode {
                 this.insertNewKey(currentKey, currentChild);
             }
         }
+
+        //Reset the next node
+        if (this.isLeaf()){
+            this.next = rightNode.getNext();
+        }
     }
 
     /**
