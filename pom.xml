@@ -60,6 +60,11 @@
       <artifactId>mysql-connector-java</artifactId>
       <version>8.0.33</version>
     </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.15</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -82,7 +87,7 @@
             <!-- Default configuration for running with: mvn clean javafx:run -->
             <id>default-cli</id>
             <configuration>
-              <mainClass>com.recipetracker.recipe_tracker/com.recipetracker.recipe_tracker.HelloApplication</mainClass>
+              <mainClass>com.recipetracker.recipe_tracker/com.recipetracker.recipe_tracker.RecipeTrackerApplication</mainClass>
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>
