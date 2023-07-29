@@ -32,6 +32,12 @@ class BTree {
         return leafNode.getRecordValue(studentId);
     }
 
+    /**
+     * Given a student ID and a parent node find the leaf node
+     * @param currentNode - node to find leaf of
+     * @param studentID - student Id key to find leaf for
+     * @return - leaf BTreeNode for the given key
+     */
     private BTreeNode findLeaf(BTreeNode currentNode, long studentID){
         if (currentNode.leaf){
             return currentNode;
@@ -43,11 +49,23 @@ class BTree {
         }
     }
 
+    /**
+     * Find the child node for a given key
+     * @param parentNode - parent node to find child for
+     * @param studentID - key used to find corresponding child
+     * @return - child node for the given key
+     */
     private BTreeNode findChildNode(BTreeNode parentNode, long studentID){
         int childIndex = findChildNodeIndex(parentNode, studentID);
         return parentNode.getChild(childIndex);
     }
 
+    /**
+     * Find the index of a child node given a student Id and parent node
+     * @param parentNode - parent node
+     * @param studentID - key
+     * @return - index of child node
+     */
     private int findChildNodeIndex(BTreeNode parentNode, long studentID){
         int n = parentNode.getN();
 
@@ -89,6 +107,12 @@ class BTree {
         return this;
     }
 
+    /**
+     * Recursive function to insert to the BTree
+     * @param currentNode - current BTreeNode
+     * @param student - student object to insert
+     * @return - new BTreeNode if split happened
+     */
     BTreeNode treeInsert(BTreeNode currentNode, Student student){
         //Handling for leaf nodes
         if (currentNode.isLeaf()){
@@ -106,6 +130,8 @@ class BTree {
                 return currentNode.split(student.studentId, student.recordId);
             }
         }
+
+        //Handling of non-leaf nodes
         else{
             BTreeNode childNode = findChildNode(currentNode, student.studentId);
             BTreeNode newChildNode = treeInsert(childNode, student);
@@ -128,76 +154,100 @@ class BTree {
     }
 
     void fileInsert(Student student){
-        //TODO
+        // TODO
     }
 
     boolean delete(long studentId) {
         /**
-         * TODO:
          * Implement this function to delete in the B+Tree.
          * Also, delete in student.csv after deleting in B+Tree, if it exists.
          * Return true if the student is deleted successfully otherwise, return false.
          */
         boolean success = treeDelete(this.root, studentId);
+        BTreeNode childNode = findChildNode(this.root, studentId);
+
+        if (this.root.getN() == 0){
+            this.root = childNode;
+        }
+
         printTest();
-        //fileDelete(studentId);
+        //fileDelete(studentId);  TODO
         return true;
     }
 
     /**
-     *
-     * @param currentNode
-     * @param studentId
+     * Delete from the BTree given a key
+     * @param currentNode - current node to delete from
+     * @param studentId - key to delete
      * @return: true if key found and deleted, false otherwise
      */
     boolean treeDelete(BTreeNode currentNode, long studentId){
+        //If this is a leaf, attempt to delete key and return
         if (currentNode.isLeaf()){
             return currentNode.deleteKey(studentId);
         }
 
         else{
-            //Find and deleted from the childNode recursively
-            int childNodeIndex = findChildNodeIndex(currentNode, studentId);
-            BTreeNode childNode = currentNode.getChild(childNodeIndex);
+            //Find and delete from the childNode recursively
+            BTreeNode childNode = findChildNode(currentNode, studentId);
             boolean wasDeleted = treeDelete(childNode, studentId);
 
-            //If deletion occured
-            if (wasDeleted && !childNode.hasEnoughElements()){
-                BTreeNode leftChild = null;
-                BTreeNode rightChild = null;
-                long newKey;
-
-                if (childNodeIndex > 0) leftChild = currentNode.getChild(childNodeIndex - 1);
-                if (childNodeIndex < currentNode.getN()) rightChild = currentNode.getChild(childNodeIndex + 1);
-
-                if (rightChild != null && rightChild.hasExtraElements()){
-                    newKey = childNode.redistribute(rightChild, currentNode.getKey(childNodeIndex));
-                    currentNode.keys[childNodeIndex] = newKey;
-                }
-
-                else if (leftChild != null && leftChild.hasExtraElements()){
-                    newKey = childNode.redistribute(leftChild, currentNode.getKey(childNodeIndex - 1));
-                    currentNode.keys[childNodeIndex - 1] = newKey;
-                }
-
-                else if (rightChild != null){
-                    //TODO
-                }
-                else if (leftChild != null){
-                    //TODO
-                }
-                else {
-                    System.out.println("Something went wrong with deletion merging/redistribution");
-                }
-
+            //If deletion occurred check if there are still enough elements
+            if (wasDeleted && !childNode.hasEnoughElements()) {
+                //Add elements to the child from siblings
+                replenishChild(currentNode, studentId);
             }
 
             return wasDeleted;
         }
     }
 
+    /**
+     * Add elements to the child from sibilings
+     * @param parentNode - parent node
+     * @param studentId - student Id that was deleted
+     */
+    void replenishChild (BTreeNode parentNode, long studentId){
+        int childNodeIndex = findChildNodeIndex(parentNode, studentId);
+        BTreeNode childNode = parentNode.getChild(childNodeIndex);
+
+        BTreeNode leftChild = null;
+        BTreeNode rightChild = null;
+        long newKey;
+
+        if (childNodeIndex > 0) leftChild = parentNode.getChild(childNodeIndex - 1);
+        if (childNodeIndex < parentNode.getN()) rightChild = parentNode.getChild(childNodeIndex + 1);
+
+        //Try to find extra elements from one of the siblings
+        if (rightChild != null && rightChild.hasExtraElements()){
+            newKey = childNode.redistribute(rightChild, parentNode.getKey(childNodeIndex));
+            parentNode.keys[childNodeIndex] = newKey;
+        }
+
+        else if (leftChild != null && leftChild.hasExtraElements()){
+            newKey = childNode.redistribute(leftChild, parentNode.getKey(childNodeIndex - 1));
+            parentNode.keys[childNodeIndex - 1] = newKey;
+        }
+
+        //If no siblings had extra elements then merge with one of them
+        else if (rightChild != null){
+            childNode.merge(rightChild, parentNode.keys[childNodeIndex]);
+            parentNode.deleteKey(childNodeIndex);
+        }
+
+        else if (leftChild != null){
+            leftChild.merge(childNode, parentNode.keys[childNodeIndex - 1]);
+            parentNode.deleteKey(childNodeIndex - 1);
+        }
+
+        //This should never happen
+        else {
+            System.out.println("Something went wrong with deletion merging/redistribution");
+        }
+    }
+
     void fileDelete(long studentId){
-        //TODO
+        // TODO
     }
 
     List<Long> print() {
@@ -206,9 +256,9 @@ class BTree {
 
         /*
          * Implement this function to print the B+Tree.
-         * Return a list of recordIDs from left to right of leaf nodes.
-         *
+         * Return a list of recordIDs from left to right of leaf nodes
          */
+
         //Get the leaf node for 0 which will be the farthest to the left
         BTreeNode currentNode = findLeaf(this.root, 0);
 
@@ -223,35 +273,25 @@ class BTree {
     }
 
     void printTest(){
-        if (!this.root.isLeaf()) printNodeKeys(this.root);
+        if (!this.root.isLeaf()) printNodeKeys(this.root, 0);
 
         List<Long> listOfStudentId = new ArrayList<>();
         BTreeNode currentNode = findLeaf(this.root, 0);
-
-        //Loop over all the leaf nodes and the records they hold
-        System.out.println(" ");
-        while (currentNode != null) {
-            for (int i = 0; i < currentNode.getN(); i++){
-                listOfStudentId.add(currentNode.getKey(i));
-            }
-            currentNode = currentNode.getNext();
-        }
-        System.out.println("List of recordIDs in B+Tree " + listOfStudentId.toString() + "\n");
     }
 
-    void printNodeKeys(BTreeNode currentNode){
+    void printNodeKeys(BTreeNode currentNode, int level){
         List<Long> listOfStudentId = new ArrayList<>();
         for (int i = 0; i < currentNode.getN(); i++){
             listOfStudentId.add(currentNode.getKey(i));
         }
-        System.out.print("List of keys in node " + listOfStudentId.toString());
+        System.out.print(" List of keys for node in level " + level + ": " + listOfStudentId.toString());
 
         if (currentNode.getChild(0) != null){
-            System.out.println("");
+            System.out.println();
             for (int i = 0; i <= currentNode.getN(); i++){
-                printNodeKeys(currentNode.getChild(i));
+                printNodeKeys(currentNode.getChild(i), level + 1);
             }
-            System.out.println("");
+            System.out.println();
         }
     }
 }

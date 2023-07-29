@@ -31,10 +31,20 @@ class BTreeNode {
      */
     long parentKey;
 
+    /**
+     * Gets the key given an index
+     * @param index - index of key
+     * @return - key
+     */
     public long getKey(int index) {
         return keys[index];
     }
 
+    /**
+     * Gets the index of the key
+     * @param studentID - key
+     * @return index
+     */
     public int getIndex(long studentID){
         for (int i = 0; i < n; i++){
             if (this.keys[i] == studentID){
@@ -44,18 +54,33 @@ class BTreeNode {
         return -1;
     }
 
+    /**
+     * Update the index of a leaf or node handling record pointers and children
+     * @param oldIndex - current index of key
+     * @param newIndex - new index for key
+     */
     public void updateIndex(int oldIndex, int newIndex){
         this.keys[newIndex] = this.keys[oldIndex];
         if (this.isLeaf()) this.values[newIndex] = this.keys[oldIndex];
         else this.children[newIndex + 1] = this.children[oldIndex + 1];
     }
 
+    /**
+     * Get the value of a record given a student ID
+     * @param studentID - key to find record with
+     * @return - record ID
+     */
     public long getRecordValue(long studentID) {
         int index = this.getIndex(studentID);
         if (index == -1) return -1;
         return values[index];
     }
 
+    /**
+     * Insert a record into a leaf node at the correct spot
+     * @param studentID - the key for the record
+     * @param recordID - the record Id
+     */
     public void insertNewRecord(long studentID, long recordID) {
         for (int i = n; i >= 0; i--) {
             /*If the student ID is less than the value at the current index
@@ -64,11 +89,12 @@ class BTreeNode {
             if (i == 0){
                 this.keys[0] = studentID;
                 this.values[0] = recordID;
+                break;
             }
 
+            //If the input key is less than the lower key update the index and move on
             else if (studentID < this.keys[i -1]) {
                 this.updateIndex(i - 1, i);
-
             }
 
             //If the student ID is greater than the value at the current index insert
@@ -78,11 +104,14 @@ class BTreeNode {
                 break;
             }
         }
+
+        //Update the count
         this.setN(this.n + 1);
     }
 
-    /*Insert a new key into a non-leaf node. Wrapper for when we are
-    only given a node
+    /**
+     * Insert a new key in the correct place given a child node with parentKey set
+     * @param child - child node to insert a key for
      */
     public void insertNewKey(BTreeNode child){
         //Get key from node and call insert
@@ -108,13 +137,14 @@ class BTreeNode {
                 this.insertNewChild(1, child); //The new child node will always be the index + 1 of the key
             }
 
-            /*If the student ID is less than the value at the current index
+            /*If the student ID is less than the value at the lower index
             update the index and move on to the next value
              */
             else if (newKey < this.keys[i - 1]){
                 this.updateIndex(i - 1, i);
             }
 
+            //If the student Id is greater than the value at the lower index then insert it here
             else {
                 index = i;
                 this.keys[index] = newKey;
@@ -126,13 +156,21 @@ class BTreeNode {
         //Increment the count
         this.setN(n + 1);
     }
+
+    /**
+     * Insert a child given an index and a child
+     * @param index - index to insert child
+     * @param childNode - child node to insert
+     */
     public void insertNewChild(int index, BTreeNode childNode){
         this.children[index] = childNode;
     }
 
     /**
-     * This routine splits a leaf node
-     * Returns the new leaf node from the split
+     * Splits a leaf node
+     * @param studentId - the new student Id to insert after the split
+     * @param recordId - the new record Id to insert after the split
+     * @return - the new BTreeNode created by the split
      */
     public BTreeNode split(long studentId, long recordId) {
         BTreeNode newNode = new BTreeNode(this.t, this.leaf);
@@ -172,7 +210,7 @@ class BTreeNode {
     }
 
     /**
-     * Splits a non-leaf node and
+     * Splits a non-leaf
      * @param childNode new child node to add after split
      * @return new Btree node from split
      */
@@ -226,6 +264,16 @@ class BTreeNode {
         int index = this.getIndex(key);
         if (index == -1) return false;
 
+        this.deleteKey(index);
+
+        return true;
+    }
+
+    /**
+     * Delete a key from the given index and update the rest of the indexes
+     * @param index - index to delete a key from
+     */
+    public void deleteKey(int index){
         //Update the indexes of everything above the key
         for (int i = index; i < this.n - 1; i++){
             updateIndex(i + 1, i);
@@ -233,21 +281,26 @@ class BTreeNode {
 
         //Decreminent n
         this.setN(this.n - 1);
-        return true;
     }
 
+    /**
+     * Redistribute keys between a node that has too many and one that has too little
+     * @param sourceNode - source of keys (node with extra keys)
+     * @param parentKey - key of the parent
+     * @return - the new parent key for the index
+     */
     public long redistribute(BTreeNode sourceNode, long parentKey){
         int keysToRedistribute = (sourceNode.getN() - this.t + 1)/2;
         long currentKey;
         long currentRecord;
         BTreeNode currentChild;
-        long newKey;
+        long newParentKey;
 
         //Handling for when the source of keys is to the right of the current node
         if (this.keys[this.n - 1] < sourceNode.keys[0]){
             //Determine the new key
-            if (this.isLeaf()) newKey = sourceNode.keys[keysToRedistribute];
-            else newKey = sourceNode.keys[keysToRedistribute - 1];
+            if (this.isLeaf()) newParentKey = sourceNode.keys[keysToRedistribute];
+            else newParentKey = sourceNode.keys[keysToRedistribute - 1];
 
             currentKey = parentKey;
             for (int i = 0; i < keysToRedistribute; i++){
@@ -271,13 +324,14 @@ class BTreeNode {
 
         //Handling for when the source of new elements is to the left of the current node
         else{
-            newKey = sourceNode.keys[sourceNode.getN() - keysToRedistribute - 1];
+            int sourceNodeStartingCount = sourceNode.getN();;
+            newParentKey = sourceNode.keys[sourceNodeStartingCount - keysToRedistribute];
             currentKey = parentKey;
 
-            for (int i = sourceNode.getN() - 1; i >= sourceNode.getN() - keysToRedistribute; i--){
+            for (int i = sourceNodeStartingCount - 1; i >= sourceNodeStartingCount - keysToRedistribute; i--){
 
                 //Insert the record in the new place
-                if (isLeaf()) {
+                if (this.isLeaf()) {
                     currentKey = sourceNode.keys[i];
                     currentRecord = sourceNode.values[i];
                     this.insertNewRecord(currentKey, currentRecord);
@@ -285,7 +339,7 @@ class BTreeNode {
 
                 //Insert the node in the new place
                 else {
-                    if (i != sourceNode.getN() - 1) currentKey = sourceNode.keys[i];
+                    if (i != sourceNodeStartingCount- 1) currentKey = sourceNode.keys[i];
                     currentChild = sourceNode.children[i + 1];
                     this.insertNewKey(currentKey, currentChild);
 
@@ -295,44 +349,92 @@ class BTreeNode {
                 }
 
                 //Delete the key from the source node
-                sourceNode.deleteKey(currentKey);
+                sourceNode.deleteKey(i);
             }
         }
 
-        return newKey;
-    }
-    public long merge(BTreeNode rightNode){
-        return 1; //TODO
+        return newParentKey;
     }
 
+    /**
+     * Merge two nodes
+     * @param rightNode - the node on the right
+     * @param parentKey - the current parent key
+     */
+    public void merge(BTreeNode rightNode, long parentKey){
+        int rightNodeStartingCount = rightNode.getN();
+        long currentKey;
+        long currentRecord;
+        BTreeNode currentChild;
+
+        //Handling to pull in parent key for non-leaf nodes
+        if (!this.isLeaf()) this.insertNewKey(parentKey, rightNode.children[0]);
+
+        //Move keys from right node to the left node
+        for (int i = 0; i < rightNodeStartingCount; i++){
+            currentKey = rightNode.keys[i];
+
+            //Insert key into the left node
+            if (this.isLeaf()){
+                currentRecord = rightNode.values[i];
+                this.insertNewRecord(currentKey, currentRecord);
+            }
+
+            else {
+                currentChild = rightNode.children[i + 1];
+                this.insertNewKey(currentKey, currentChild);
+            }
+
+            //Delete key from the left node
+            rightNode.deleteKey(i);
+        }
+    }
+
+    /**
+     * Given an index get the child node
+     * @param index - index of child
+     * @return - child node
+     */
     public BTreeNode getChild(int index) {
         return children[index];
     }
 
-    public void setChildren(BTreeNode[] children) {
-        this.children = children;
-    }
-
+    /**
+     * Get the value of n from the node
+     * @return - n
+     */
     public int getN() {
         return n;
     }
 
+    /**
+     * Set N for the node
+     * @param n - the new value of n
+     */
     public void setN(int n) {
         this.n = n;
     }
 
+    /**
+     * Returns whether the node is a leaf node
+     * @return - true if a leaf node and false otherwise
+     */
     public boolean isLeaf() {
         return leaf;
     }
 
-    public void setLeaf(boolean leaf) {
-        this.leaf = leaf;
-    }
-
+    /**
+     * Gets the next leaf node
+     * @return - leaf node to the right
+     */
     public BTreeNode getNext() {
         return next;
     }
 
+    /**
+     * Set the next leaf node
+     * @param next - the next leaf node to be set
+     */
     public void setNext(BTreeNode next) {
         this.next = next;
     }

@@ -97,6 +97,10 @@ public class BTreeMain {
         }
     }
 
+    /**
+     * Get the list of students from Student.csv
+     * @return - list of student objects
+     */
     private static List<Student> getStudents() {
 
         /*

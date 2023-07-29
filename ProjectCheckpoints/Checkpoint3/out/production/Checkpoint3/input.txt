@@ -27,7 +27,6 @@ insert 19 Jack Ryan Law FR 18 24
 delete 30
 insert 33 Jack Ryan Law FR 18 24
 insert 34 Jack Ryan Law FR 18 24
-delete 27
-delete 29
-insert 10 Jack Ryan Law FR 18 24
-insert 11 Jack Ryan Law FR 18 24
+delete 19
+delete 20
+delete 24
