@@ -57,25 +57,28 @@ public class BTreeMain {
                     switch (operation) {
                         case "insert": {
 
+                            // Build student values from input file
                             long studentId = Long.parseLong(s2.next());
                             String studentName = s2.next() + " " + s2.next();
                             String major = s2.next();
                             String level = s2.next();
                             int age = Integer.parseInt(s2.next());
-                            /*TODO Write a logic to generate recordID*/
+
                             long recordID = maxRecordId++; //Increment max record ID to get next one
 
                             // Check whether that student record already exists
                             long existingRecordId = -1;
                             existingRecordId = bTree.search(studentId);
 
-                            // Don't insert if student already exists
                             if(existingRecordId != -1){
+                                // Don't insert if student already exists
                                 System.out.println("Student Id already exists.");
                             } else {
+                                // Build student and insert into tree
                                 Student s = new Student(studentId, age, studentName, major, level, recordID);
                                 bTree.insert(s);
 
+                                // Append new student to file
                                 FileWriter fw = new FileWriter("Student.csv", true);
                                 BufferedWriter bw = new BufferedWriter(fw);
                                 bw.write(s.csvString());
@@ -105,7 +108,7 @@ public class BTreeMain {
                             break;
                         }
                         case "print": {
-                            List<Long> listOfRecordID;
+                            List<String> listOfRecordID;
                             listOfRecordID = bTree.print();
                             System.out.println("List of recordIDs in B+Tree " + listOfRecordID.toString());
                         }
