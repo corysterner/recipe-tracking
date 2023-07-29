@@ -21,4 +21,14 @@ public class Student {
         this.level = level;
         this.recordId = recordId;
     }
+
+    public String csvString() {
+        return String.join(",",
+                String.valueOf(studentId),
+                studentName,
+                major,
+                level,
+                String.valueOf(age),
+                String.valueOf(recordId));
+    }
 }

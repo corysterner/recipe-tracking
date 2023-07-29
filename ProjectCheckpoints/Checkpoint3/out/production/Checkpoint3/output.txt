@@ -1,3 +1,24 @@
 Student deleted successfully.
 Student exists in the database at <recordID>
 Student exists in the database at 15
+2,Jack Ryan,Law,FR,18,24
+3,Jack Ryan,Law,FR,18,24
+5,Jack Ryan,Law,FR,18,24
+7,Jack Ryan,Law,FR,18,24
+8,Jack Ryan,Law,FR,18,24
+13,Jack Ryan,Law,FR,18,24
+14,Jack Ryan,Law,FR,18,24
+16,Jack Ryan,Law,FR,18,24
+8,Jack Ryan,Law,FR,18,24
+17,Jack Ryan,Law,FR,18,24
+38,Jack Ryan,Law,FR,18,24
+39,Jack Ryan,Law,FR,18,24
+30,Jack Ryan,Law,FR,18,24
+29,Jack Ryan,Law,FR,18,24
+27,Jack Ryan,Law,FR,18,24
+24,Jack Ryan,Law,FR,18,24
+20,Jack Ryan,Law,FR,18,24
+22,Jack Ryan,Law,FR,18,24
+19,Jack Ryan,Law,FR,18,24
+33,Jack Ryan,Law,FR,18,24
+34,Jack Ryan,Law,FR,18,24
