@@ -154,7 +154,7 @@ class BTree {
     }
 
     void fileInsert(Student student){
-        // TODO
+        //TODO
     }
 
     boolean delete(long studentId) {
@@ -164,14 +164,14 @@ class BTree {
          * Return true if the student is deleted successfully otherwise, return false.
          */
         boolean success = treeDelete(this.root, studentId);
-        BTreeNode childNode = findChildNode(this.root, studentId);
 
-        if (this.root.getN() == 0){
-            this.root = childNode;
+        //Reset the root node if its empty
+        if (!this.root.isLeaf() && (this.root.getN() == 0)){
+            this.root = findChildNode(this.root, studentId);
         }
 
         printTest();
-        //fileDelete(studentId);  TODO
+        //fileDelete(studentId); TODO
         return true;
     }
 
@@ -247,7 +247,7 @@ class BTree {
     }
 
     void fileDelete(long studentId){
-        // TODO
+        //TODO
     }
 
     List<Long> print() {
