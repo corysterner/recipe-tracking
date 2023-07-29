@@ -101,9 +101,10 @@ class BTree {
             this.root = newRoot;
 
         }
+        System.out.println(student.studentId);
+
         //fileInsert(student); TODO
         printTest();
-        System.out.println(student.studentId);
         return this;
     }
 
@@ -273,10 +274,12 @@ class BTree {
     }
 
     void printTest(){
-        if (!this.root.isLeaf()) printNodeKeys(this.root, 0);
+        printNodeKeys(this.root, 0);
 
         List<Long> listOfStudentId = new ArrayList<>();
         BTreeNode currentNode = findLeaf(this.root, 0);
+
+        System.out.println();
     }
 
     void printNodeKeys(BTreeNode currentNode, int level){

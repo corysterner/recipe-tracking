@@ -384,9 +384,6 @@ class BTreeNode {
                 currentChild = rightNode.children[i + 1];
                 this.insertNewKey(currentKey, currentChild);
             }
-
-            //Delete key from the left node
-            rightNode.deleteKey(i);
         }
     }
 
