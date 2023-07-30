@@ -101,7 +101,6 @@ class BTree {
             this.root = newRoot;
 
         }
-        System.out.println(student.studentId);
 
         return this;
     }
