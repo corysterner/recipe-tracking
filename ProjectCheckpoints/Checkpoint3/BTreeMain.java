@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-//import java.util.Random;
 
 /**
  * Main Application.
@@ -46,7 +45,6 @@ public class BTreeMain {
 
         /* Start reading the operations now from input file*/
         try {
-            //Random rand = new Random(); //TODO: determine if I should remove
             while (scan.hasNextLine()) {
                 Scanner s2 = new Scanner(scan.nextLine());
 

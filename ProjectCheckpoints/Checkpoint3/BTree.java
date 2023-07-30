@@ -154,10 +154,6 @@ class BTree {
         }
     }
 
-    void fileInsert(Student student){
-        //TODO
-    }
-
     boolean delete(long studentId) {
         /**
          * Implement this function to delete in the B+Tree.
