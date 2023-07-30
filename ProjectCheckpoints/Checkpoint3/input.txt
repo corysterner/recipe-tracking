@@ -1,0 +1,34 @@
+2
+print
+insert 2 Jack Ryan Law FR 18 24
+insert 3 Jack Ryan Law FR 18 24
+insert 5 Jack Ryan Law FR 18 5
+insert 7 Jack Ryan Law FR 18 24
+insert 8 Jack Ryan Law FR 18 8
+search 8
+delete 8
+search 8
+search 5
+insert 13 Jack Ryan Law FR 18 24
+insert 14 Jack Ryan Law FR 18 24
+insert 16 Jack Ryan Law FR 18 24
+insert 8 Jack Ryan Law FR 18 24
+delete 13
+insert 17 Jack Ryan Law FR 18 24
+insert 38 Jack Ryan Law FR 18 24
+insert 39 Jack Ryan Law FR 18 24
+delete 17
+insert 30 Jack Ryan Law FR 18 24
+insert 29 Jack Ryan Law FR 18 24
+insert 27 Jack Ryan Law FR 18 24
+insert 24 Jack Ryan Law FR 18 24
+insert 20 Jack Ryan Law FR 18 24
+insert 22 Jack Ryan Law FR 18 24
+insert 19 Jack Ryan Law FR 18 24
+delete 30
+insert 33 Jack Ryan Law FR 18 24
+insert 34 Jack Ryan Law FR 18 24
+delete 19
+delete 20
+delete 24
+print
