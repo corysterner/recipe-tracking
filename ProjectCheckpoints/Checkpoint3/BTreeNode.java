@@ -61,7 +61,7 @@ class BTreeNode {
      */
     public void updateIndex(int oldIndex, int newIndex){
         this.keys[newIndex] = this.keys[oldIndex];
-        if (this.isLeaf()) this.values[newIndex] = this.keys[oldIndex];
+        if (this.isLeaf()) this.values[newIndex] = this.values[oldIndex];
         else this.children[newIndex + 1] = this.children[oldIndex + 1];
     }
 
