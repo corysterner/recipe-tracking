@@ -62,7 +62,8 @@ public class BTreeMain {
                             String level = s2.next();
                             int age = Integer.parseInt(s2.next());
 
-                            long recordID = maxRecordId++; //Increment max record ID to get next one
+                            maxRecordId++; //Increment max record ID to get next one
+                            long recordID = maxRecordId;
 
                             // Check whether that student record already exists
                             long existingRecordId = -1;
