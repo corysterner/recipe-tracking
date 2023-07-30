@@ -171,8 +171,7 @@ class BTree {
             this.root = findChildNode(this.root, studentId);
         }
 
-        printTest();
-        //fileDelete(studentId); TODO
+        //printTest();
         return true;
     }
 
@@ -247,13 +246,9 @@ class BTree {
         }
     }
 
-    void fileDelete(long studentId){
-        //TODO
-    }
+    List<Long> print() {
 
-    List<String> print() {
-
-        List<String> listOfRecordID = new ArrayList<>();
+        List<Long> listOfRecordID = new ArrayList<>();
 
         /*
          * Implement this function to print the B+Tree.
@@ -266,7 +261,7 @@ class BTree {
         //Loop over all the leaf nodes and the records they hold
         while (currentNode != null) {
             for (int i = 0; i < currentNode.getN(); i++){
-                listOfRecordID.add(currentNode.getKey(i) + ":" + currentNode.values[i]);
+                listOfRecordID.add(currentNode.values[i]);
             }
             currentNode = currentNode.getNext();
         }

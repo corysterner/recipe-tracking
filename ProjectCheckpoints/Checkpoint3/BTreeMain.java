@@ -108,7 +108,7 @@ public class BTreeMain {
                             break;
                         }
                         case "print": {
-                            List<String> listOfRecordID;
+                            List<Long> listOfRecordID;
                             listOfRecordID = bTree.print();
                             System.out.println("List of recordIDs in B+Tree " + listOfRecordID.toString());
                         }
