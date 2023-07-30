@@ -103,8 +103,6 @@ class BTree {
         }
         System.out.println(student.studentId);
 
-       //printTest();
-        System.out.println(print().toString());
         return this;
     }
 

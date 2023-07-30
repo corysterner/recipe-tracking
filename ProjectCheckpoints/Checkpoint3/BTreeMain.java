@@ -61,6 +61,7 @@ public class BTreeMain {
                             String major = s2.next();
                             String level = s2.next();
                             int age = Integer.parseInt(s2.next());
+                            long placeholderRecordId = Long.parseLong(s2.next());
 
                             maxRecordId++; //Increment max record ID to get next one
                             long recordID = maxRecordId;
@@ -110,9 +111,10 @@ public class BTreeMain {
                             List<Long> listOfRecordID;
                             listOfRecordID = bTree.print();
                             System.out.println("List of recordIDs in B+Tree " + listOfRecordID.toString());
+                            break;
                         }
                         default:
-                            System.out.println("Wrong Operation");
+                            System.out.println("Operation: " + operation + "Wrong Operation");
                             break;
                     }
                 }
