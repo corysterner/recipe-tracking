@@ -41,6 +41,8 @@ public class HomeController implements Initializable {
     ObservableList<Integer> availableTime;
     List<Integer> caloriesRangeList = new ArrayList<>();
     ObservableList<Integer> availableCalories;
+    List<Integer> ratingList = new ArrayList<>();
+    ObservableList<Integer> availableRatings;
     public void initialize(URL fxmlFileLocation, ResourceBundle resources){
         // Get all category values and initialize the SearchableComboBox
         allCatValues = DbConnector.getDbConnector().selectQueryCategory();
@@ -56,6 +58,10 @@ public class HomeController implements Initializable {
         caloriesRangeList = getCaloriesRangeList();
         availableCalories = FXCollections.observableList(caloriesRangeList);
         caloriesFilter.setItems(availableCalories);
+
+        ratingList = getRatingList();
+        availableRatings = FXCollections.observableList(ratingList);
+        ratingFilter.setItems(availableRatings);
     }
 
     private class CategoryConverter extends StringConverter<Recipe.Category> {
@@ -163,6 +169,12 @@ public class HomeController implements Initializable {
     public ArrayList<Integer> getCaloriesRangeList(){
         ArrayList<Integer> result = new ArrayList<>();
         List<Integer> integerList = Arrays.asList(0, 100, 250, 500, 1000, 1500);
+        result.addAll(integerList);
+        return result;
+    }
+    public ArrayList<Integer> getRatingList(){
+        ArrayList<Integer> result = new ArrayList<>();
+        List<Integer> integerList = Arrays.asList(0, 1, 2, 3, 4, 5);
         result.addAll(integerList);
         return result;
     }

@@ -87,7 +87,7 @@ public class DbConnector {
             ArrayList<Recipe> result = new ArrayList();
             int rows=0;
             Recipe rec = null;
-            while (resultSet.next() && rows < 20) {
+            while (resultSet.next() && rows < 100) {
                 rows++;
                 rec = new Recipe(0,"","");
                 rec.id=resultSet.getInt("recipeid");
