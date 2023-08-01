@@ -129,4 +129,32 @@ public class DbConnector {
         }
         return null;
     }
+
+    public Recipe getRecipe(int recipeId){
+        try {
+            Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
+            Statement stmt = con.createStatement();
+            ResultSet resultSet = stmt.executeQuery("select name, desc from Recipe where recipeid = " + recipeId);
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            resultSet.next();
+
+            //Create a new recipe
+            Recipe recipe = new Recipe(
+                    recipeId,
+                    resultSet.getString("name"),
+                    resultSet.getString("description"));
+
+            //Cleanup
+            resultSet.close();
+            stmt.close();
+            con.close();
+
+            return recipe;
+
+        } catch (SQLException e){
+            System.out.println(e);
+        }
+        return null;
+    }
 }
+

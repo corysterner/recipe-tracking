@@ -41,6 +41,8 @@ public class HomeController implements Initializable {
     ObservableList<Integer> availableTime;
     List<Integer> caloriesRangeList = new ArrayList<>();
     ObservableList<Integer> availableCalories;
+
+
     public void initialize(URL fxmlFileLocation, ResourceBundle resources){
         // Get all category values and initialize the SearchableComboBox
         allCatValues = DbConnector.getDbConnector().selectQueryCategory();
