@@ -7,9 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
@@ -19,19 +17,31 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import org.controlsfx.control.SearchableComboBox;
 
+import javax.sql.rowset.CachedRowSet;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
 import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 import static java.lang.Thread.sleep;
 
 public class CreateModalController implements Initializable {
+    Integer userId = 0;
     public Button saveButton;
     public SearchableComboBox<Recipe.Category> categoryComboBox;
     public FlowPane selectedCatFlowPane;
+    public TextField sizeText;
+    public TextField servingsText;
+    public TextField nameText;
+    public TextField prepText;
+    public TextField cookText;
+    public TextField caloriesText;
+    public TextArea descriptionText;
+    public TextArea ingredientsText;
+    public TextArea instructionsText;
 
     // Stores the full list of categories from the DB.
     List<Recipe.Category> allCatValues = new ArrayList<>();
@@ -62,13 +72,27 @@ public class CreateModalController implements Initializable {
     private List<Recipe.Category> getAllCategoryValues() {
         List<Recipe.Category> catValues = new ArrayList<>();
 
-        // TODO: Update to retrieve category values from DB
-        for(int i = 0; i < 10; i++){
-            catValues.add(new Recipe.Category(i, "Category" + i));
+        // Pull list of possible categories from database
+        String queryString = "Select * from categories";
+        CachedRowSet categories = DbConnector.getDbConnector().selectQuery(queryString);
+        try {
+
+            while (categories.next()){
+                catValues.add(new Recipe.Category(categories.getInt("id"), categories.getString("value")));
+            }
+        } catch (SQLException e){
+            System.out.println(e);
         }
 
         return catValues;
+    }
 
+    /**
+     * Set the userId so it can be passed into the recipe creation
+     * @param userId
+     */
+    public void setUser(Integer userId) {
+        this.userId = userId;
     }
 
     /**
@@ -95,9 +119,39 @@ public class CreateModalController implements Initializable {
 
     public void saveAndCloseModal(ActionEvent actionEvent) {
 
-        // TODO: Update to actually file all of the recipe info
-        String queryString = "insert into test_table (string) values ('test')";
+        // Values: DatePublished, PrepTime, CookTime, TotalTime, Calories, Name, Description, IngredientAmount, size, serving, Instructions, AuthorId
+        Date datePublished = new java.sql.Date(new Date().getTime());
+        Integer prepTime = Integer.valueOf(prepText.getText());
+        Integer cookTime = Integer.valueOf(cookText.getText());
+        Integer totalTime = prepTime + cookTime;
+        Integer calories = Integer.valueOf(caloriesText.getText());
+        String name = nameText.getText();
+        String description = descriptionText.getText();
+        String ingredientAmount = ingredientsText.getText();
+        Integer size = Integer.valueOf(sizeText.getText());
+        Integer serving = Integer.valueOf(servingsText.getText());
+        String instructions = instructionsText.getText();
+        Integer authorId = userId;
+
+        String queryString = "INSERT INTO recipes (DatePublished, PrepTime, CookTime, TotalTime, Calories, Name, " +
+                "Description, IngredientAmount, size, serving, Instructions, AuthorId)"+
+                "VALUES ('"+
+                datePublished + "','" +
+                prepTime + "','" +
+                cookTime + "','" +
+                totalTime + "','" +
+                calories + "','" +
+                name + "','" +
+                description + "','" +
+                ingredientAmount + "','" +
+                size + "','" +
+                serving + "','" +
+                instructions + "','" +
+                authorId + "')";
+
         DbConnector.getDbConnector().createOrUpdateQuery(queryString);
+
+        // TODO: Add updates to categories
 
         Stage stage = (Stage) saveButton.getScene().getWindow();
         stage.close();
