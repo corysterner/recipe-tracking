@@ -89,10 +89,11 @@ public class DbConnector {
             Recipe rec = null;
             while (resultSet.next() && rows < 100) {
                 rows++;
-                rec = new Recipe(0,"","");
-                rec.id=resultSet.getInt("recipeid");
-                rec.name=resultSet.getString("name");
-                rec.description=resultSet.getString("description");
+                rec = new Recipe(0,"","","");
+               try {rec.id=resultSet.getInt("recipeid");} catch (SQLException e){}
+                try {rec.name=resultSet.getString("name");} catch (SQLException e){}
+                try {rec.description=resultSet.getString("description");} catch (SQLException e){}
+                try {rec.instructions=resultSet.getString("instructions");} catch (SQLException e){}
                 result.add(rec);
             }
             resultSet.close();

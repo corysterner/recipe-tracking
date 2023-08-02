@@ -13,6 +13,7 @@ public class Recipe {
     int calories;
 
     String description;
+    String instructions;
 
     boolean isFavorite;
     boolean createUser;
@@ -21,10 +22,11 @@ public class Recipe {
     // We probably only need the constructor to
     // take a single object - the type of objects
     // returned from the sql select query
-    public Recipe(int recipeId, String name, String desc){
+    public Recipe(int recipeId, String name, String desc,String instructions){
         this.id=recipeId;
         this.name = name;
         this.description = desc;
+        this.instructions = instructions;
     }
 
     public static class Category{

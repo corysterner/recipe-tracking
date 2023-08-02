@@ -135,6 +135,26 @@ public class HomeController implements Initializable {
         stage.showAndWait();
     }
 
+    public void openEditModal(ActionEvent actionEvent) {
+
+        Stage stage = new Stage();
+        Parent root = null;
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    EditModalController.class.getResource("edit-modal.fxml"));
+            EditModalController editModalController = new EditModalController(80);
+            loader.setController(editModalController);
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage.setScene(new Scene(root));
+        stage.setTitle("Edit Recipe");
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(allRecipesPagination.getScene().getWindow());
+        stage.showAndWait();
+    }
+
     /**
      * Builds a Vbox of all the recipes in the list in the order
      * they're added to the list

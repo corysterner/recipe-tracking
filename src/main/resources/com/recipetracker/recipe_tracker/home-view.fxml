@@ -20,6 +20,7 @@
                   <Label layoutX="17.0" layoutY="132.0" prefHeight="23.0" prefWidth="72.0" text="Categories: " />
                   <Label layoutX="22.0" layoutY="175.0" prefHeight="600.0" prefWidth="62.0" text="Instructions" />
                   <Label layoutX="17.0" layoutY="112.0" prefHeight="721.0" prefWidth="28.0" text="Label" />
+                  <Button layoutX="423.0" layoutY="14.0" mnemonicParsing="false" onAction="#openEditModal" text="Edit" />
                </children>
             </AnchorPane>
         </content>
