@@ -142,7 +142,7 @@ public class HomeController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(
                     EditModalController.class.getResource("edit-modal.fxml"));
-            EditModalController editModalController = new EditModalController(80);
+            EditModalController editModalController = new EditModalController(400);
             loader.setController(editModalController);
             root = loader.load();
         } catch (IOException e) {

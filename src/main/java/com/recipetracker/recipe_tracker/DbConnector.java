@@ -92,8 +92,13 @@ public class DbConnector {
                 rec = new Recipe(0,"","","");
                try {rec.id=resultSet.getInt("recipeid");} catch (SQLException e){}
                 try {rec.name=resultSet.getString("name");} catch (SQLException e){}
+                try {rec.prepTimeMinutes=resultSet.getInt("prepTime");} catch (SQLException e){}
+                try {rec.cookTimeMinutes=resultSet.getInt("cookTime");} catch (SQLException e){}
+                try {rec.calories=resultSet.getInt("calories");} catch (SQLException e){}
                 try {rec.description=resultSet.getString("description");} catch (SQLException e){}
                 try {rec.instructions=resultSet.getString("instructions");} catch (SQLException e){}
+                try {rec.ingredients=resultSet.getString("ingredients");} catch (SQLException e){}
+                try {rec.serving=resultSet.getInt("serving");} catch (SQLException e){}
                 result.add(rec);
             }
             resultSet.close();

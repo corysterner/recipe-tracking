@@ -11,10 +11,11 @@ public class Recipe {
     int cookTimeMinutes;
     int prepTimeMinutes;
     int calories;
+    int serving;
 
     String description;
     String instructions;
-
+    String ingredients;
     boolean isFavorite;
     boolean createUser;
 

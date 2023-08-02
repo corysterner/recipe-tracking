@@ -23,19 +23,25 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class EditModalController implements Initializable {
     private int recipeId;
+    Integer userId = 0;
     public Button saveButton;
-    public TextField nameText;
-    public TextArea descriptionText;
-    public TextArea instructionsText;
     public SearchableComboBox<Recipe.Category> categoryComboBox;
     public FlowPane selectedCatFlowPane;
-
-
+    public TextField sizeText;
+    public TextField servingsText;
+    public TextField nameText;
+    public TextField prepText;
+    public TextField cookText;
+    public TextField caloriesText;
+    public TextArea descriptionText;
+    public TextArea ingredientsText;
+    public TextArea instructionsText;
 
     // Stores the full list of categories from the DB.
     List<Recipe.Category> allCatValues = new ArrayList<>();
@@ -45,7 +51,6 @@ public class EditModalController implements Initializable {
 
     // Used to populate the SearchableComboBox with the category items
     ObservableList<Recipe.Category> availableCategories;
-
     public EditModalController(int recipeId) {
         this.recipeId = recipeId;
     }
@@ -60,13 +65,28 @@ public class EditModalController implements Initializable {
         availableCategories = FXCollections.observableList(allCatValues);
         categoryComboBox.setConverter(new CategoryConverter());
         categoryComboBox.setItems(availableCategories);
-
-        String queryString =" select name,description,REPLACE(REPLACE(instructions,',', '\\n'),\"'\",'') AS instructions from recipes where RecipeId="+recipeId;
-        ArrayList<Recipe> results = DbConnector.getDbConnector().selectQueryShort(queryString);
-        if (results.size()>0){
-            nameText.setText(results.get(0).name);
-            descriptionText.setText(results.get(0).description);
-            instructionsText.setText(results.get(0).instructions);
+        if (recipeId>0){
+            String queryString =" select " +
+                    "name," +
+                    "description," +
+                    "prepTime," +
+                    "cookTime," +
+                    "calories," +
+                    "REPLACE(REPLACE(REPLACE(REPLACE(ingredients,',', '\\n'),\"'\",''),'[',' '),']','') AS ingredients,"+
+                    "serving,"+
+                    "REPLACE(REPLACE(REPLACE(instructions,\"', '\", '\\n'),'[',' '),']','') AS instructions " +
+                    "from recipes where RecipeId="+recipeId;
+            ArrayList<Recipe> results = DbConnector.getDbConnector().selectQueryShort(queryString);
+            if (results.size()>0) {
+                nameText.setText(results.get(0).name);
+                descriptionText.setText(results.get(0).description);
+                instructionsText.setText(results.get(0).instructions);
+                prepText.setText(Integer.toString(results.get(0).prepTimeMinutes));
+                cookText.setText(Integer.toString(results.get(0).cookTimeMinutes));
+                caloriesText.setText(Integer.toString(results.get(0).calories));
+                ingredientsText.setText(results.get(0).ingredients);
+                servingsText.setText(Integer.toString(results.get(0).serving));
+            }
         }
 
     }
@@ -104,9 +124,28 @@ public class EditModalController implements Initializable {
 
     public void saveAndCloseModal(ActionEvent actionEvent) {
 
-        // TODO: Update to actually file all of the recipe info
-        String queryString = "insert into test_table (string) values ('test')";
+        // Values: DatePublished, PrepTime, CookTime, TotalTime, Calories, Name, Description, IngredientAmount, size, serving, Instructions, AuthorId
+        Date datePublished = new java.sql.Date(new Date().getTime());
+        Integer prepTime = Integer.valueOf(prepText.getText());
+        Integer cookTime = Integer.valueOf(cookText.getText());
+        Integer totalTime = prepTime + cookTime;
+        Integer calories = Integer.valueOf(caloriesText.getText());
+        String name = nameText.getText();
+        String description = descriptionText.getText();
+        String ingredientAmount = ingredientsText.getText();
+        //Integer size = Integer.valueOf(sizeText.getText());
+        Integer serving = Integer.valueOf(servingsText.getText());
+        String instructions = instructionsText.getText();
+        Integer authorId = userId;
+
+        String queryString = "UPDATE recipes SET DatePublished=\'"+datePublished+"\', PrepTime="+prepTime+", " +
+                "CookTime="+cookTime+", TotalTime="+totalTime+", Calories="+calories+", Name=\'"+name+"\', " +
+               "Description=\'"+description+"\', ingredients=\'"+ingredientAmount+"\', Instructions=\'"
+                +instructions+"\' , serving="+serving+" where recipeId="+recipeId;
+
         DbConnector.getDbConnector().createOrUpdateQuery(queryString);
+
+        // TODO: Add updates to categories
 
         Stage stage = (Stage) saveButton.getScene().getWindow();
         stage.close();
