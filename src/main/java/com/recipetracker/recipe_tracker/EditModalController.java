@@ -29,9 +29,9 @@ import java.util.ResourceBundle;
 public class EditModalController implements Initializable {
     private int recipeId;
     public Button saveButton;
-    public TextField recipeName;
-    public TextArea editDescription;
-    public TextArea editInstructions;
+    public TextField nameText;
+    public TextArea descriptionText;
+    public TextArea instructionsText;
     public SearchableComboBox<Recipe.Category> categoryComboBox;
     public FlowPane selectedCatFlowPane;
 
@@ -64,9 +64,9 @@ public class EditModalController implements Initializable {
         String queryString =" select name,description,REPLACE(REPLACE(instructions,',', '\\n'),\"'\",'') AS instructions from recipes where RecipeId="+recipeId;
         ArrayList<Recipe> results = DbConnector.getDbConnector().selectQueryShort(queryString);
         if (results.size()>0){
-            recipeName.setText(results.get(0).name);
-            editDescription.setText(results.get(0).description);
-            editInstructions.setText(results.get(0).instructions);
+            nameText.setText(results.get(0).name);
+            descriptionText.setText(results.get(0).description);
+            instructionsText.setText(results.get(0).instructions);
         }
 
     }
