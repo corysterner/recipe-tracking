@@ -112,6 +112,7 @@ public class HomeController implements Initializable {
 
     public void updateSingleRecipe(int recipeId) {
         // Update the right side scroll pane with this recipe's info
+        //TODO
     }
 
     public void openCreateModal(ActionEvent actionEvent) {

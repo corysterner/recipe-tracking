@@ -27,6 +27,22 @@ public class Recipe {
         this.description = desc;
     }
 
+    public Recipe(int recipeId,
+                  String name,
+                  String desc,
+                  String date,
+                  String ingredients,
+                  String instructions,
+                  int prepTime,
+                  int cookTime,
+                  int totalTime,
+                  int calories,
+                  int servings,
+                  String servingSize
+                  ){
+
+    }
+
     public static class Category{
         int id;
         String value;
@@ -43,4 +59,5 @@ public class Recipe {
             return value;
         }
     }
+
 }

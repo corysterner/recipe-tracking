@@ -134,7 +134,7 @@ public class DbConnector {
         try {
             Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
             Statement stmt = con.createStatement();
-            ResultSet resultSet = stmt.executeQuery("select name, desc from Recipe where recipeid = " + recipeId);
+            ResultSet resultSet = stmt.executeQuery("select * from recipes where recipeid = " + recipeId);
             ResultSetMetaData metaData = resultSet.getMetaData();
             resultSet.next();
 
@@ -143,6 +143,7 @@ public class DbConnector {
                     recipeId,
                     resultSet.getString("name"),
                     resultSet.getString("description"));
+            //TODO
 
             //Cleanup
             resultSet.close();

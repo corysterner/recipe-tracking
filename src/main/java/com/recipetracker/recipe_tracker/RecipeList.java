@@ -36,5 +36,4 @@ public class RecipeList extends ArrayList<Recipe> {
             this.add(new Recipe(results.get(i).id,results.get(i).name,results.get(i).description));
         }
     }
-
 }
