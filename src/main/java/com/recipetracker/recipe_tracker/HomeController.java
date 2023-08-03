@@ -17,6 +17,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import javafx.util.StringConverter;
+import org.controlsfx.control.Rating;
 
 import java.io.IOException;
 import java.net.URL;
@@ -33,6 +34,21 @@ public class HomeController implements Initializable {
     public ComboBox<Integer> timeFilter;
     public ComboBox<Integer> caloriesFilter;
     public Pagination allRecipesPagination;
+
+    //Fields for right side card
+    public Label singleRecipeTitle;
+    public TextArea recipeDescription;
+    public Label prepTimeLabel;
+    public Label cookTimeLabel;
+    public Label totalTimeLabel;
+    public ListView<String> instructionList;
+    public ListView<String> ingredientList;
+    public Label servingsLabel;
+    public Label servingSizeLabel;
+    public Label caloriesLabel;
+    public Label categoryListLabel;
+    public Rating ratingBar;
+    public Label ratingLabel;
 
 
     List<Recipe.Category> allCatValues = new ArrayList<>();
@@ -58,6 +74,8 @@ public class HomeController implements Initializable {
         caloriesRangeList = getCaloriesRangeList();
         availableCalories = FXCollections.observableList(caloriesRangeList);
         caloriesFilter.setItems(availableCalories);
+
+        updateSingleRecipe(100001234);
     }
 
     private class CategoryConverter extends StringConverter<Recipe.Category> {
@@ -80,7 +98,7 @@ public class HomeController implements Initializable {
 
 
 
-        public ScrollPane getPages(int pageIndex){
+    public ScrollPane getPages(int pageIndex){
 
         // Start a new recipe list
         RecipeList recipeList = new RecipeList();
@@ -112,7 +130,42 @@ public class HomeController implements Initializable {
 
     public void updateSingleRecipe(int recipeId) {
         // Update the right side scroll pane with this recipe's info
-        //TODO
+        Recipe recipe = DbConnector.dbConnector.selectQueryFullRecipe(recipeId);
+
+        singleRecipeTitle.setText(recipe.name);
+        recipeDescription.setText(recipe.description);
+        ratingBar.setRating(recipe.getRatingAvg());
+        ratingLabel.setText(String.format("Avg. Rating of %.1f/5 Over %d Ratings",
+                recipe.getRatingAvg(), recipe.getRatingCount()));
+
+        //Quantities
+        servingsLabel.setText(Integer.toString(recipe.servings));
+        servingSizeLabel.setText(recipe.servingSize);
+        caloriesLabel.setText(Integer.toString(recipe.calories));
+
+        //Timing
+        prepTimeLabel.setText(String.format("%d min",recipe.prepTimeMinutes));
+        cookTimeLabel.setText(String.format("%d min",recipe.cookTimeMinutes));
+        totalTimeLabel.setText(String.format("%d min",recipe.totalTimeMinutes));
+
+        //Body
+        ingredientList.getItems().addAll(recipe.ingredients);
+        for (int i = 0; i < recipe.instructions.size(); i++){
+            instructionList.getItems().add(
+                    String.format("%d. %s",i + 1,recipe.instructions.get(i)));
+        }
+        for (int i = 0; i < recipe.categories.size(); i++){
+            if (i == 0) {
+                categoryListLabel.setText(categoryListLabel.getText() + " " +
+                        recipe.categories.get(i).getCategory());
+            }
+            else {
+                categoryListLabel.setText(categoryListLabel.getText() +
+                        ", " +
+                        recipe.categories.get(i).getCategory());
+            }
+        }
+
     }
 
     public void openCreateModal(ActionEvent actionEvent) {
