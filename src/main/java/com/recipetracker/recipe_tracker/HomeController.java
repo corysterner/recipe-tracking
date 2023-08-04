@@ -25,8 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
-
 public class HomeController implements Initializable {
+    Integer userId = 0;
     public TextField searchTextAllRecipes;
     public ComboBox<Recipe.Category> categoryFilter;
     public ComboBox<Integer> ratingFilter;
@@ -197,5 +197,9 @@ public class HomeController implements Initializable {
         List<Integer> integerList = Arrays.asList(0, 1, 2, 3, 4, 5);
         result.addAll(integerList);
         return result;
+    }
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+        searchTextAllRecipes.setText(userId.toString());
     }
 }
