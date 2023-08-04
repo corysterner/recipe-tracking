@@ -51,31 +51,31 @@ public class DbConnector {
     }
 
     // TODO: This will return something, just not sure on the object type...
-    public ArrayList<Object> selectQuery(String queryString){
-          try {
-            Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
-            Statement stmt = con.createStatement();
-            // TODO: This is probably a different call(s) that actually return a value
-                        ResultSet resultSet = stmt.executeQuery(queryString);
-            ResultSetMetaData metaData = resultSet.getMetaData();
-            int columns = metaData.getColumnCount();
-            ArrayList<Object> result = new ArrayList();
-            int rows=0;
-            while (resultSet.next() && rows < 200) {
-               rows++;
-                for (int ii=1; ii<= columns; ii++) {
-                    result.add(resultSet.getObject(ii));
-                }
-            }
-            resultSet.close();
-            stmt.close();
-            con.close();
-            return result;
-        } catch (SQLException e){
-            System.out.println(e);
-        }
-       return null;
-    }
+//    public ArrayList<Object> selectQuery(String queryString){
+//          try {
+//            Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
+//            Statement stmt = con.createStatement();
+//            // TODO: This is probably a different call(s) that actually return a value
+//                        ResultSet resultSet = stmt.executeQuery(queryString);
+//            ResultSetMetaData metaData = resultSet.getMetaData();
+//            int columns = metaData.getColumnCount();
+//            ArrayList<Object> result = new ArrayList();
+//            int rows=0;
+//            while (resultSet.next() && rows < 200) {
+//               rows++;
+//                for (int ii=1; ii<= columns; ii++) {
+//                    result.add(resultSet.getObject(ii));
+//                }
+//            }
+//            resultSet.close();
+//            stmt.close();
+//            con.close();
+//            return result;
+//        } catch (SQLException e){
+//            System.out.println(e);
+//        }
+//       return null;
+//    }
   
     public ArrayList<Recipe> selectQueryShort(String queryString){
         try {
@@ -138,7 +138,6 @@ public class DbConnector {
             
             //Cleanup
             con.close();
-            return result;
           
         } catch (SQLException e){
             System.out.println(e);
