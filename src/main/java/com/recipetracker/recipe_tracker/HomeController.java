@@ -75,7 +75,6 @@ public class HomeController implements Initializable {
         availableCalories = FXCollections.observableList(caloriesRangeList);
         caloriesFilter.setItems(availableCalories);
 
-        updateSingleRecipe(100001234);
     }
 
     private class CategoryConverter extends StringConverter<Recipe.Category> {
@@ -129,6 +128,9 @@ public class HomeController implements Initializable {
     }
 
     public void updateSingleRecipe(int recipeId) {
+        //Clear Lists
+        clearSingleRecipe();
+
         // Update the right side scroll pane with this recipe's info
         Recipe recipe = DbConnector.dbConnector.selectQueryFullRecipe(recipeId);
 
@@ -166,6 +168,11 @@ public class HomeController implements Initializable {
             }
         }
 
+    }
+    private void clearSingleRecipe(){
+        ingredientList.getItems().clear();
+        instructionList.getItems().clear();
+        categoryListLabel.setText("Categories: ");
     }
 
     public void openCreateModal(ActionEvent actionEvent) {

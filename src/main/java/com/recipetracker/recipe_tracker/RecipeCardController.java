@@ -31,5 +31,6 @@ public class RecipeCardController {
         this.recipe = recipe;
         recipeName.setText(recipe.name);
         recipeDescription.setText(recipe.description);
+        this.recipeId = recipe.id;
     }
 }
