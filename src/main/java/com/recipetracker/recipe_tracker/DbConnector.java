@@ -1,10 +1,6 @@
 package com.recipetracker.recipe_tracker;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.sql.rowset.*;
 
 public class DbConnector {
@@ -102,4 +98,33 @@ public class DbConnector {
         return crs;
     }
 
+    /**
+     * Similar to createOrUpdateQuery, but returns the Id(s) of the records inserted.
+     * @param queryString
+     * @return CachedRowSet of the generated keys returned from the query
+     */
+    public CachedRowSet createQuery(String queryString) {
+
+        ResultSet result;
+        CachedRowSet crs = null;
+
+        try {
+            Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
+            Statement stmt = con.createStatement();
+
+            // Actually return the generated keys with the 2nd parameter set
+            stmt.execute(queryString, Statement.RETURN_GENERATED_KEYS);
+
+            result = stmt.getGeneratedKeys();
+
+            crs = RowSetProvider.newFactory().createCachedRowSet();
+            crs.populate(result);
+
+            con.close();
+        } catch (SQLException e){
+            System.out.println(e);
+        }
+
+        return crs;
+    }
 }

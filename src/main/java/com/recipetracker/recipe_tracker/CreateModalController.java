@@ -1,5 +1,6 @@
 package com.recipetracker.recipe_tracker;
 
+import com.mysql.cj.util.StringUtils;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,6 +26,8 @@ import java.net.URL;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
+import java.lang.*;
+
 
 import static java.lang.Thread.sleep;
 
@@ -149,9 +152,35 @@ public class CreateModalController implements Initializable {
                 instructions + "','" +
                 authorId + "')";
 
-        DbConnector.getDbConnector().createOrUpdateQuery(queryString);
+        // Run new recipe query and get back recipe ID to put in categories
+        CachedRowSet result = DbConnector.getDbConnector().createQuery(queryString);
 
-        // TODO: Add updates to categories
+        Integer recipeId = -1;
+
+        // Get recipe Id from the result
+        try {
+            result.next();
+            recipeId = result.getInt(1);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        // If there are category values selected and the recipe insert was successful, insert categories
+        if(selectedCatValues.size() > 0 && recipeId > -1){
+            String valuesString = "";
+
+            // Build values string
+            for(Recipe.Category cat : selectedCatValues) {
+                valuesString = valuesString + "(" + recipeId + "," + cat.id + "),";
+            }
+
+            // Chop off last comma
+            valuesString = org.apache.commons.lang3.StringUtils.chop(valuesString);
+
+            // Run insert for recipe-categories
+            queryString = "INSERT INTO recipecategory (RecipeId, CategoryId) VALUES " + valuesString;
+            DbConnector.getDbConnector().createQuery(queryString);
+        }
 
         Stage stage = (Stage) saveButton.getScene().getWindow();
         stage.close();
