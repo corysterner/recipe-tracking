@@ -47,6 +47,68 @@ public class DbConnector {
     }
 
     // TODO: This will return something, just not sure on the object type...
+//    public ArrayList<Object> selectQuery(String queryString){
+//          try {
+//            Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
+//            Statement stmt = con.createStatement();
+//            // TODO: This is probably a different call(s) that actually return a value
+//                        ResultSet resultSet = stmt.executeQuery(queryString);
+//            ResultSetMetaData metaData = resultSet.getMetaData();
+//            int columns = metaData.getColumnCount();
+//            ArrayList<Object> result = new ArrayList();
+//            int rows=0;
+//            while (resultSet.next() && rows < 200) {
+//               rows++;
+//                for (int ii=1; ii<= columns; ii++) {
+//                    result.add(resultSet.getObject(ii));
+//                }
+//            }
+//            resultSet.close();
+//            stmt.close();
+//            con.close();
+//            return result;
+//        } catch (SQLException e){
+//            System.out.println(e);
+//        }
+//       return null;
+//    }
+  
+    public ArrayList<Recipe> selectQueryShort(String queryString){
+        try {
+            Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
+            Statement stmt = con.createStatement();
+            ResultSet resultSet = stmt.executeQuery(queryString);
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            ArrayList<Recipe> result = new ArrayList();
+            int rows=0;
+            Recipe rec = null;
+            while (resultSet.next() && rows < 100) {
+                rows++;
+                rec = new Recipe(0,"","","");
+               try {rec.id=resultSet.getInt("recipeid");} catch (SQLException e){}
+                try {rec.name=resultSet.getString("name");} catch (SQLException e){}
+                try {rec.prepTimeMinutes=resultSet.getInt("prepTime");} catch (SQLException e){}
+                try {rec.cookTimeMinutes=resultSet.getInt("cookTime");} catch (SQLException e){}
+                try {rec.calories=resultSet.getInt("calories");} catch (SQLException e){}
+                try {rec.description=resultSet.getString("description");} catch (SQLException e){}
+                try {rec.instructions=resultSet.getString("instructions");} catch (SQLException e){}
+                try {rec.ingredients=resultSet.getString("ingredients");} catch (SQLException e){}
+                try {rec.serving=resultSet.getInt("serving");} catch (SQLException e){}
+                result.add(rec);
+            }
+          
+            //Cleanup
+            resultSet.close();
+            stmt.close();
+            con.close();
+            return result;
+          
+        } catch (SQLException e){
+            System.out.println(e);
+        }
+      
+        return null;
+    }
 
     /**
      * Select query.
@@ -60,7 +122,7 @@ public class DbConnector {
     public CachedRowSet selectQuery(String queryString){
         ResultSet result = null;
         CachedRowSet crs = null;
-
+  
         try {
             Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
             Statement stmt = con.createStatement();
@@ -69,8 +131,10 @@ public class DbConnector {
 
             crs = RowSetProvider.newFactory().createCachedRowSet();
             crs.populate(result);
-
+            
+            //Cleanup
             con.close();
+          
         } catch (SQLException e){
             System.out.println(e);
         }
@@ -126,5 +190,29 @@ public class DbConnector {
         }
 
         return crs;
+
+    public ArrayList<Recipe.Category> selectQueryCategory(){
+        try {
+            Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
+            Statement stmt = con.createStatement();
+            ResultSet resultSet = stmt.executeQuery("select id,value from categories");
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            ArrayList<Recipe.Category> result = new ArrayList();
+            Recipe.Category cat = null;
+            while (resultSet.next() ) {
+
+                cat = new Recipe.Category(0,"");
+                cat.id=resultSet.getInt("id");
+                cat.value=resultSet.getString("value");
+                result.add(cat);
+            }
+            resultSet.close();
+            stmt.close();
+            con.close();
+            return result;
+        } catch (SQLException e){
+            System.out.println(e);
+        }
+        return null;
     }
 }
