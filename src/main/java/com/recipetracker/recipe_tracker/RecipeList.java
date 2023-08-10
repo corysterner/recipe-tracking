@@ -18,7 +18,8 @@ public class RecipeList extends ArrayList<Recipe> {
      *
      */
     public void performRecipeSearch(int numberRecipes, String sortBy, String searchString, int category,
-                                    int minRating, int maxTime, int maxCalories){
+                                    int minRating, int maxTime, int maxCalories, int userId, boolean isFavorite,
+                                    boolean isUsers){
 
         String queryString =" select recipeid,name,description from recipes where name like \"%"+searchString+"%\"";
         if (maxTime>0){
@@ -32,6 +33,15 @@ public class RecipeList extends ArrayList<Recipe> {
         }
         if (minRating >0) {
             queryString = queryString + " AND recipeid IN (select recipeId from ratings GROUP BY recipeid having AVG(rating) >="+ minRating+")";
+        }
+        if (userId != -1){
+            if (isFavorite) {
+                queryString = queryString + "AND recipeid IN " +
+                        "(select recipeId from favorites where userId = " + userId + ")";
+            }
+            if (isUsers){
+                queryString = queryString + "AND authorid = " + userId;
+            }
         }
         if (sortBy!="") {
             queryString= queryString+ " ORDER BY "+sortBy;
