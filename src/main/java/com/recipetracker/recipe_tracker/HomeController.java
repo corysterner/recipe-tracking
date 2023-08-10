@@ -4,10 +4,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -16,7 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
-import javafx.util.StringConverter;
+import org.controlsfx.control.Rating;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,6 +34,21 @@ public class HomeController implements Initializable {
     public Pagination myRecipesPagination;
     public Pagination myFavoritesPagination;
 
+    //Fields for right side card
+    public Label singleRecipeTitle;
+    public TextArea recipeDescription;
+    public Label prepTimeLabel;
+    public Label cookTimeLabel;
+    public Label totalTimeLabel;
+    public ListView<String> instructionList;
+    public ListView<String> ingredientList;
+    public Label servingsLabel;
+    public Label servingSizeLabel;
+    public Label caloriesLabel;
+    public Label categoryListLabel;
+    public Rating ratingBar;
+    public Label ratingLabel;
+
 
     List<Recipe.Category> allCatValues = new ArrayList<>();
     ObservableList<Recipe.Category> availableCategories;
@@ -43,8 +56,10 @@ public class HomeController implements Initializable {
     ObservableList<Integer> availableTime;
     List<Integer> caloriesRangeList = new ArrayList<>();
     ObservableList<Integer> availableCalories;
+
     List<Integer> ratingList = new ArrayList<>();
     ObservableList<Integer> availableRatings;
+
     public void initialize(URL fxmlFileLocation, ResourceBundle resources){
         // Get all category values and initialize the SearchableComboBox
         allCatValues = DbConnector.getDbConnector().selectQueryCategory();
@@ -146,7 +161,51 @@ public class HomeController implements Initializable {
     public void getMyFavorites(Event event) {myFavoritesPagination.setPageFactory(this::getFavoritesPages);}
 
     public void updateSingleRecipe(int recipeId) {
+        //Clear Lists
+        clearSingleRecipe();
+
         // Update the right side scroll pane with this recipe's info
+        Recipe recipe = DbConnector.dbConnector.selectQueryFullRecipe(recipeId);
+
+        singleRecipeTitle.setText(recipe.name);
+        recipeDescription.setText(recipe.description);
+        ratingBar.setRating(recipe.getRatingAvg());
+        ratingLabel.setText(String.format("Avg. Rating of %.1f/5 Over %d Ratings",
+                recipe.getRatingAvg(), recipe.getRatingCount()));
+
+        //Quantities
+        servingsLabel.setText(Integer.toString(recipe.servings));
+        servingSizeLabel.setText(recipe.servingSize);
+        caloriesLabel.setText(Integer.toString(recipe.calories));
+
+        //Timing
+        prepTimeLabel.setText(String.format("%d min",recipe.prepTimeMinutes));
+        cookTimeLabel.setText(String.format("%d min",recipe.cookTimeMinutes));
+        totalTimeLabel.setText(String.format("%d min",recipe.totalTimeMinutes));
+
+        //Body
+        ingredientList.getItems().addAll(recipe.ingredientsList);
+        for (int i = 0; i < recipe.instructionList.size(); i++){
+            instructionList.getItems().add(
+                    String.format("%d. %s",i + 1,recipe.instructionList.get(i)));
+        }
+        for (int i = 0; i < recipe.categories.size(); i++){
+            if (i == 0) {
+                categoryListLabel.setText(categoryListLabel.getText() + " " +
+                        recipe.categories.get(i).getCategory());
+            }
+            else {
+                categoryListLabel.setText(categoryListLabel.getText() +
+                        ", " +
+                        recipe.categories.get(i).getCategory());
+            }
+        }
+
+    }
+    private void clearSingleRecipe(){
+        ingredientList.getItems().clear();
+        instructionList.getItems().clear();
+        categoryListLabel.setText("Categories: ");
     }
 
     public void openCreateModal(ActionEvent actionEvent) {
