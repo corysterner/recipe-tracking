@@ -163,4 +163,120 @@ public class DbConnector {
         }
         return null;
     }
+
+    public Recipe selectQueryFullRecipe(int recipeId){
+
+        Recipe recipe = selectQueryRecipe(recipeId);
+        recipe.setCategories(selectRecipeCategories(recipeId));
+        recipe.setRating(selectRecipeRating(recipeId));
+
+        return recipe;
+    }
+
+    public Recipe selectQueryRecipe(int recipeId){
+        try {
+            Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
+            Statement stmt = con.createStatement();
+
+            ResultSet resultSet = stmt.executeQuery("select * " +
+                    "from recipes " +
+                    "where recipeid = " + recipeId);
+
+            resultSet.next();
+
+            //Create a new recipe
+            Recipe recipe = new Recipe(
+                    recipeId,
+                    resultSet.getString("name"),
+                    resultSet.getString("description"),
+                    resultSet.getString("DatePublished"),
+                    resultSet.getString("IngredientAmount"),
+                    resultSet.getString("Instructions"),
+                    resultSet.getInt("PrepTime"),
+                    resultSet.getInt("CookTime"),
+                    resultSet.getInt("TotalTime"),
+                    resultSet.getInt("Calories"),
+                    resultSet.getInt("serving"),
+                    resultSet.getString("size"),
+                    resultSet.getInt("AuthorId"));
+
+            //Cleanup
+            resultSet.close();
+            stmt.close();
+            con.close();
+
+            return recipe;
+
+        } catch (SQLException e){
+            System.out.println(e);
+        }
+
+        return null;
+    }
+
+    public List<Recipe.Category> selectRecipeCategories(int recipeId){
+        try {
+            Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
+            Statement stmt = con.createStatement();
+
+            //Categories query
+            ResultSet resultSet = stmt.executeQuery("select value, id " +
+                    "from recipecategory " +
+                    "join categories " +
+                    "on CategoryId = id " +
+                    "where recipeid = " + recipeId);
+
+            resultSet.next();
+
+            List<Recipe.Category> recipeCategories = new ArrayList<Recipe.Category>();
+            Recipe.Category cat;
+            while (resultSet.next() ) {
+                cat = new Recipe.Category(resultSet.getInt("id")
+                        ,resultSet.getString("value"));
+                recipeCategories.add(cat);
+            }
+
+            //Cleanup
+            resultSet.close();
+            stmt.close();
+            con.close();
+
+            return recipeCategories;
+
+        } catch (SQLException e){
+            System.out.println(e);
+        }
+
+        return null;
+
+    }
+
+    public Recipe.Rating selectRecipeRating(int recipeId){
+        try {
+            Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
+            Statement stmt = con.createStatement();
+
+           ResultSet resultSet = stmt.executeQuery("select AVG(Rating), COUNT(Rating) " +
+                    "from ratings " +
+                    "where recipeid = " + recipeId);
+
+            resultSet.next();
+
+            Recipe.Rating rating = new Recipe.Rating(
+                    resultSet.getFloat("AVG(Rating)"),
+                    resultSet.getInt("COUNT(Rating)"));
+
+            //Cleanup
+            resultSet.close();
+            stmt.close();
+            con.close();
+
+            return rating;
+
+        } catch (SQLException e){
+            System.out.println(e);
+        }
+        return null;
+    }
 }
+
