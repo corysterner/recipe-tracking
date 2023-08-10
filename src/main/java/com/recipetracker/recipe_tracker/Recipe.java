@@ -60,8 +60,8 @@ public class Recipe {
         this.name = name;
         this.description = desc;
         this.date = date;
-        this.ingredientsList = convertDatabaseArray(ingredients);
-        this.instructionList = convertDatabaseArray(instructions);
+        this.ingredientsList = convertDatabaseArray(ingredients, "\"");
+        this.instructionList = convertDatabaseArray(instructions, "'");
         this.prepTimeMinutes = prepTime;
         this.cookTimeMinutes = cookTime;
         this.totalTimeMinutes = totalTime;
@@ -71,14 +71,12 @@ public class Recipe {
         this.authorId = authorId;
     }
 
-    private List<String> convertDatabaseArray(String databaseArray){
-        databaseArray = databaseArray.replace("[","")
-                .replace("'","")
-                .replace("]","")
-                .replace(", ", ",")
-                .replaceAll("\\s+"," ")
-                .replace("\"","");
-        return Arrays.asList(databaseArray.split(","));
+    private List<String> convertDatabaseArray(String databaseArray, String separator){
+        databaseArray = databaseArray.replace("[" + separator,"")
+                .replace(separator + "]","")
+                .replace(", " + separator, "," + separator)
+                .replaceAll("\\s+"," ");
+        return Arrays.asList(databaseArray.split(separator + "," + separator));
     }
 
     public void setCategories(List<Recipe.Category> categories){
