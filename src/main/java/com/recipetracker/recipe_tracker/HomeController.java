@@ -33,6 +33,8 @@ public class HomeController implements Initializable {
     public ComboBox<Integer> timeFilter;
     public ComboBox<Integer> caloriesFilter;
     public Pagination allRecipesPagination;
+    public Pagination myRecipesPagination;
+    public Pagination myFavoritesPagination;
 
 
     List<Recipe.Category> allCatValues = new ArrayList<>();
@@ -83,8 +85,7 @@ public class HomeController implements Initializable {
 
 
 
-
-        public ScrollPane getPages(int pageIndex){
+    public ScrollPane getPages(int pageIndex){
 
         // Start a new recipe list
         RecipeList recipeList = new RecipeList();
@@ -99,20 +100,50 @@ public class HomeController implements Initializable {
                 categoryFilter.getValue() == null ? 0 : categoryFilter.getValue().getCategoryId(),
                 ratingFilter.getValue() == null ? 0 : ratingFilter.getValue(),
                 timeFilter.getValue() == null ? 0 : timeFilter.getValue(),
-                caloriesFilter.getValue() == null ? 0 : caloriesFilter.getValue());
+                caloriesFilter.getValue() == null ? 0 : caloriesFilter.getValue(),
+                -1, false, false);
 
         // return the Scrollpane populated with all of the recipe cards
         return buildScrollPaneOfRecipes(recipeList);
     }
+    public ScrollPane getFavoritesPages (int index){
+
+        // Start a new recipe list
+        RecipeList recipeList = new RecipeList();
+
+        // Populate favorite list
+
+        recipeList.performRecipeSearch(20, "name",
+                "", 0, 0, 0, 0,
+                this.userId, true, false);
+
+        // return the Scrollpane populated with favorites
+        return buildScrollPaneOfRecipes(recipeList);
+
+    }
+    public ScrollPane getUserPages(int index){
+
+        // Start a new recipe list
+        RecipeList recipeList = new RecipeList();
+
+        // Populate recipe list with user recipes
+
+        recipeList.performRecipeSearch(20, "name",
+                "", 0, 0, 0, 0,
+                this.userId, false, true);
+
+        // return the Scrollpane populated with favorites
+        return buildScrollPaneOfRecipes(recipeList);
+
+    }
+
     public void searchAllRecipes(ActionEvent actionEvent) {
         allRecipesPagination.setPageFactory(this::getPages);
     }
 
-    public void getMyRecipes(Event event) {
-    }
+    public void getMyRecipes(Event event) {myRecipesPagination.setPageFactory(this::getUserPages);}
 
-    public void getMyFavorites(Event event) {
-    }
+    public void getMyFavorites(Event event) {myFavoritesPagination.setPageFactory(this::getFavoritesPages);}
 
     public void updateSingleRecipe(int recipeId) {
         // Update the right side scroll pane with this recipe's info
