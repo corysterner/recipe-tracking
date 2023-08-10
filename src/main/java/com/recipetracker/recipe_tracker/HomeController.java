@@ -23,8 +23,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
-
 public class HomeController implements Initializable {
+    Integer userId = 0;
     public TextField searchTextAllRecipes;
     public ComboBox<Recipe.Category> categoryFilter;
     public ComboBox<Integer> ratingFilter;
@@ -55,6 +55,8 @@ public class HomeController implements Initializable {
     List<Integer> caloriesRangeList = new ArrayList<>();
     ObservableList<Integer> availableCalories;
 
+    List<Integer> ratingList = new ArrayList<>();
+    ObservableList<Integer> availableRatings;
 
     public void initialize(URL fxmlFileLocation, ResourceBundle resources){
         // Get all category values and initialize the SearchableComboBox
@@ -72,6 +74,9 @@ public class HomeController implements Initializable {
         availableCalories = FXCollections.observableList(caloriesRangeList);
         caloriesFilter.setItems(availableCalories);
 
+        ratingList = getRatingList();
+        availableRatings = FXCollections.observableList(ratingList);
+        ratingFilter.setItems(availableRatings);
     }
 
     private class CategoryConverter extends StringConverter<Recipe.Category> {
@@ -189,6 +194,26 @@ public class HomeController implements Initializable {
         stage.showAndWait();
     }
 
+    public void openEditModal(ActionEvent actionEvent) {
+
+        Stage stage = new Stage();
+        Parent root = null;
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    EditModalController.class.getResource("edit-modal.fxml"));
+            EditModalController editModalController = new EditModalController(400);
+            loader.setController(editModalController);
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage.setScene(new Scene(root));
+        stage.setTitle("Edit Recipe");
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(allRecipesPagination.getScene().getWindow());
+        stage.showAndWait();
+    }
+
     /**
      * Builds a Vbox of all the recipes in the list in the order
      * they're added to the list
@@ -225,5 +250,15 @@ public class HomeController implements Initializable {
         List<Integer> integerList = Arrays.asList(0, 100, 250, 500, 1000, 1500);
         result.addAll(integerList);
         return result;
+    }
+    public ArrayList<Integer> getRatingList(){
+        ArrayList<Integer> result = new ArrayList<>();
+        List<Integer> integerList = Arrays.asList(0, 1, 2, 3, 4, 5);
+        result.addAll(integerList);
+        return result;
+    }
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+        searchTextAllRecipes.setText(userId.toString());
     }
 }

@@ -19,9 +19,11 @@ public class Recipe {
     String servingSize;
     int authorId;
     String date;
+    int serving;
 
     String description;
-
+    String instructions;
+    String ingredients;
     boolean isFavorite;
     boolean createUser;
 
@@ -29,10 +31,11 @@ public class Recipe {
     // We probably only need the constructor to
     // take a single object - the type of objects
     // returned from the sql select query
-    public Recipe(int recipeId, String name, String desc){
-        this.id = recipeId;
+    public Recipe(int recipeId, String name, String desc,String instructions){
+        this.id=recipeId;
         this.name = name;
         this.description = desc;
+        this.instructions = instructions;
     }
 
     /**

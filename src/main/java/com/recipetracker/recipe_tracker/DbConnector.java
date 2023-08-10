@@ -1,13 +1,11 @@
 package com.recipetracker.recipe_tracker;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.sql.rowset.*;
 
 public class DbConnector {
 
@@ -20,7 +18,6 @@ public class DbConnector {
     // Private constructor so there's only one of these DbConnector objects
     // We only expect to need to connect to this one DB
     private DbConnector(){
-        // TODO figure out if we need this call at all... not sure what it does
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
@@ -52,33 +49,7 @@ public class DbConnector {
             System.out.println(e);
         }
     }
-
-    // TODO: This will return something, just not sure on the object type...
-    public ArrayList<Object> selectQuery(String queryString){
-        try {
-            Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
-            Statement stmt = con.createStatement();
-            // TODO: This is probably a different call(s) that actually return a value
-            ResultSet resultSet = stmt.executeQuery(queryString);
-            ResultSetMetaData metaData = resultSet.getMetaData();
-            int columns = metaData.getColumnCount();
-            ArrayList<Object> result = new ArrayList();
-            int rows=0;
-            while (resultSet.next() && rows < 200) {
-               rows++;
-                for (int ii=1; ii<= columns; ii++) {
-                    result.add(resultSet.getObject(ii));
-                }
-            }
-            resultSet.close();
-            stmt.close();
-            con.close();
-            return result;
-        } catch (SQLException e){
-            System.out.println(e);
-        }
-       return null;
-    }
+  
     public ArrayList<Recipe> selectQueryShort(String queryString){
         try {
             Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
@@ -88,22 +59,84 @@ public class DbConnector {
             ArrayList<Recipe> result = new ArrayList();
             int rows=0;
             Recipe rec = null;
-            while (resultSet.next() && rows < 20) {
+            while (resultSet.next() && rows < 100) {
                 rows++;
-                rec = new Recipe(0,"","");
-                rec.id=resultSet.getInt("recipeid");
-                rec.name=resultSet.getString("name");
-                rec.description=resultSet.getString("description");
+                rec = new Recipe(0,"","","");
+               try {rec.id=resultSet.getInt("recipeid");} catch (SQLException e){}
+                try {rec.name=resultSet.getString("name");} catch (SQLException e){}
+                try {rec.prepTimeMinutes=resultSet.getInt("prepTime");} catch (SQLException e){}
+                try {rec.cookTimeMinutes=resultSet.getInt("cookTime");} catch (SQLException e){}
+                try {rec.calories=resultSet.getInt("calories");} catch (SQLException e){}
+                try {rec.description=resultSet.getString("description");} catch (SQLException e){}
+                try {rec.instructions=resultSet.getString("instructions");} catch (SQLException e){}
+                try {rec.ingredients=resultSet.getString("ingredients");} catch (SQLException e){}
+                try {rec.serving=resultSet.getInt("serving");} catch (SQLException e){}
                 result.add(rec);
             }
+          
+            //Cleanup
             resultSet.close();
             stmt.close();
             con.close();
             return result;
+          
         } catch (SQLException e){
             System.out.println(e);
         }
+      
         return null;
+    }
+
+    /**
+     * Select query.
+     *
+     * Returns a CachedRowSet (since the original ResultSet will be lost after the
+     * connection is closed).
+     *
+     * @param queryString
+     * @return
+     */
+    public CachedRowSet selectQuery(String queryString){
+        ResultSet result = null;
+        CachedRowSet crs = null;
+  
+        try {
+            Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
+            Statement stmt = con.createStatement();
+            // TODO: This is probably a different call(s) that actually return a value
+            result = stmt.executeQuery(queryString);
+
+            crs = RowSetProvider.newFactory().createCachedRowSet();
+            crs.populate(result);
+            
+            //Cleanup
+            con.close();
+          
+        } catch (SQLException e){
+            System.out.println(e);
+        }
+
+        /*
+        List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
+        Map<String, Object> row = null;
+
+        try {
+            ResultSetMetaData metaData = result.getMetaData();
+            Integer columnCount = metaData.getColumnCount();
+
+            while (result.next()) {
+                row = new HashMap<String, Object>();
+                for (int i = 1; i <= columnCount; i++) {
+                    row.put(metaData.getColumnName(i), result.getObject(i));
+                }
+                resultList.add(row);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        */
+
+        return crs;
     }
 
     public ArrayList<Recipe.Category> selectQueryCategory(){
