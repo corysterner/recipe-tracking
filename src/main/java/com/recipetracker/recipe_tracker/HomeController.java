@@ -4,10 +4,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -15,7 +13,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 import javafx.util.StringConverter;
 import org.controlsfx.control.Rating;
 
@@ -151,10 +148,10 @@ public class HomeController implements Initializable {
         totalTimeLabel.setText(String.format("%d min",recipe.totalTimeMinutes));
 
         //Body
-        ingredientList.getItems().addAll(recipe.ingredients);
-        for (int i = 0; i < recipe.instructions.size(); i++){
+        ingredientList.getItems().addAll(recipe.ingredientsList);
+        for (int i = 0; i < recipe.instructionList.size(); i++){
             instructionList.getItems().add(
-                    String.format("%d. %s",i + 1,recipe.instructions.get(i)));
+                    String.format("%d. %s",i + 1,recipe.instructionList.get(i)));
         }
         for (int i = 0; i < recipe.categories.size(); i++){
             if (i == 0) {

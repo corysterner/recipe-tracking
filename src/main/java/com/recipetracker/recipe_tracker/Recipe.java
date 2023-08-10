@@ -1,6 +1,5 @@
 package com.recipetracker.recipe_tracker;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -8,8 +7,8 @@ public class Recipe {
 
     int id;
     String name;
-    List<String> ingredients;
-    List<String> instructions;
+    List<String> ingredientsList;
+    List<String> instructionList;
     List<Recipe.Category> categories;
     Recipe.Rating rating;
     int cookTimeMinutes;
@@ -58,8 +57,8 @@ public class Recipe {
         this.name = name;
         this.description = desc;
         this.date = date;
-        this.ingredients = convertDatabaseArray(ingredients);
-        this.instructions = convertDatabaseArray(instructions);
+        this.ingredientsList = convertDatabaseArray(ingredients);
+        this.instructionList = convertDatabaseArray(instructions);
         this.prepTimeMinutes = prepTime;
         this.cookTimeMinutes = cookTime;
         this.totalTimeMinutes = totalTime;
