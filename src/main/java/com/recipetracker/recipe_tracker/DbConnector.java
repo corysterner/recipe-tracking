@@ -71,6 +71,7 @@ public class DbConnector {
                 try {rec.instructions=resultSet.getString("instructions");} catch (SQLException e){}
                 try {rec.ingredients=resultSet.getString("ingredients");} catch (SQLException e){}
                 try {rec.serving=resultSet.getInt("serving");} catch (SQLException e){}
+                try {rec.servingSize=resultSet.getString("size");} catch (SQLException e){}
                 result.add(rec);
             }
           
@@ -144,6 +145,30 @@ public class DbConnector {
             Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
             Statement stmt = con.createStatement();
             ResultSet resultSet = stmt.executeQuery("select id,value from categories");
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            ArrayList<Recipe.Category> result = new ArrayList();
+            Recipe.Category cat = null;
+            while (resultSet.next() ) {
+
+                cat = new Recipe.Category(0,"");
+                cat.id=resultSet.getInt("id");
+                cat.value=resultSet.getString("value");
+                result.add(cat);
+            }
+            resultSet.close();
+            stmt.close();
+            con.close();
+            return result;
+        } catch (SQLException e){
+            System.out.println(e);
+        }
+        return null;
+    }
+    public ArrayList<Recipe.Category> selectQueryCategory(int recipeId){
+        try {
+            Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
+            Statement stmt = con.createStatement();
+            ResultSet resultSet = stmt.executeQuery("SELECT c.id, c.value FROM recipeCategory rc JOIN categories c ON rc.categoryId = c.id WHERE rc.recipeId ="+recipeId);
             ResultSetMetaData metaData = resultSet.getMetaData();
             ArrayList<Recipe.Category> result = new ArrayList();
             Recipe.Category cat = null;

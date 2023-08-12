@@ -6,9 +6,9 @@
 <?import javafx.scene.text.*?>
 <?import org.controlsfx.control.*?>
 
-<AnchorPane prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ScrollPane>
+      <ScrollPane fitToHeight="true">
          <content>
             <VBox>
                <children>
@@ -23,12 +23,12 @@
                            </padding>
                         </Label>
                         <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
-                        <Button style="-fx-background-color: none;" text="Cancel" textFill="#0000ee">
+                        <Button fx:id="cancelButton" onAction="#cancelAndCloseEdit" style="-fx-background-color: none;" text="Cancel" textFill="#0000ee">
                            <HBox.margin>
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </HBox.margin>
                         </Button>
-                        <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveAndCloseModal" style="-fx-background-color: green;" text="Save" textFill="WHITE">
+                        <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveAndCloseEdit" style="-fx-background-color: green;" text="Save" textFill="WHITE">
                            <HBox.margin>
                               <Insets bottom="15.0" left="5.0" right="30.0" top="15.0" />
                            </HBox.margin>
@@ -177,7 +177,7 @@
                         <Insets bottom="5.0" left="10.0" right="5.0" top="20.0" />
                      </padding>
                   </Label>
-                  <TextArea fx:id="ingredientsText" layoutX="10.0" layoutY="248.0" prefHeight="150.0" prefWidth="400.0" translateX="10.0">
+                  <TextArea fx:id="ingredientsText" layoutX="10.0" layoutY="248.0" prefHeight="100.0" prefWidth="400.0" translateX="10.0">
                      <VBox.margin>
                         <Insets right="20.0" />
                      </VBox.margin></TextArea>
@@ -189,7 +189,7 @@
                         <Insets bottom="5.0" left="10.0" right="5.0" top="20.0" />
                      </padding>
                   </Label>
-                  <TextArea fx:id="instructionsText" layoutX="10.0" layoutY="383.0" prefHeight="150.0" prefWidth="400.0" translateX="10.0">
+                  <TextArea fx:id="instructionsText" layoutX="10.0" layoutY="373.0" prefHeight="150.0" prefWidth="400.0" translateX="10.0">
                      <VBox.margin>
                         <Insets right="20.0" />
                      </VBox.margin></TextArea>
