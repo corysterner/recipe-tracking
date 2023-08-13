@@ -308,6 +308,7 @@ public class HomeController implements Initializable {
         stage.initModality(Modality.WINDOW_MODAL);
         stage.initOwner(allRecipesPagination.getScene().getWindow());
         stage.showAndWait();
+        if (currentRecipe.id!=0) {updateSingleRecipe(currentRecipe.id);}
     }
 
     /**
