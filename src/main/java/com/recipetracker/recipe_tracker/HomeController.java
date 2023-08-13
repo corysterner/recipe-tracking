@@ -1,5 +1,6 @@
 package com.recipetracker.recipe_tracker;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -183,9 +184,10 @@ public class HomeController implements Initializable {
         // Update the right side scroll pane with this recipe's info
         Recipe recipe = DbConnector.dbConnector.selectQueryFullRecipe(recipeId, this.userId);
         currentRecipe = recipe;
-        Recipe recipe = DbConnector.dbConnector.selectQueryFullRecipe(recipeId);
+        //Recipe recipe = DbConnector.dbConnector.selectQueryFullRecipe(recipeId);
         if ((recipeId > 0) && (userId==recipe.authorId)){
-            editRecipe.setVisible(true);}else{
+            editRecipe.setVisible(true);
+        }else{
             editRecipe.setVisible(false);
         }
 
@@ -295,7 +297,7 @@ public class HomeController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(
                     EditModalController.class.getResource("edit-modal.fxml"));
-            EditModalController editModalController = new EditModalController(this.recipeId);
+            EditModalController editModalController = new EditModalController(this.currentRecipe.id);
             loader.setController(editModalController);
             root = loader.load();
         } catch (IOException e) {
