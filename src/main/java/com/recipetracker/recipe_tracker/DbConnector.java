@@ -193,23 +193,14 @@ public class DbConnector {
         return null;
     }
 
-    public Recipe selectQueryFullRecipe(int recipeId){
-
-        Recipe recipe = selectQueryRecipe(recipeId);
-        recipe.setCategories(selectRecipeCategories(recipeId));
-        recipe.setRating(selectRecipeRating(recipeId));
-
-        return recipe;
-    }
-
-    public Recipe selectQueryRecipe(int recipeId){
+    public Recipe selectQueryFullRecipe(int recipeId, int userId){
         try {
             Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
             Statement stmt = con.createStatement();
 
-            ResultSet resultSet = stmt.executeQuery("select * " +
-                    "from recipes " +
-                    "where recipeid = " + recipeId);
+            ResultSet resultSet = stmt.executeQuery(
+                    "call getFullRecipe(" + recipeId + ", " + userId + ");"
+            );
 
             resultSet.next();
 
@@ -229,6 +220,28 @@ public class DbConnector {
                     resultSet.getString("size"),
                     resultSet.getInt("AuthorId"));
 
+            //Add favorite
+            recipe.setFavorite(resultSet.getInt("FavoriteId") > 0);
+
+            //Add rating
+            Recipe.Rating rating = new Recipe.Rating(
+                    resultSet.getFloat("averageRating"),
+                    resultSet.getInt("ratingCount"),
+                    resultSet.getInt("userRating"));
+            recipe.setRating(rating);
+            //Add comments
+            recipe.setComments(resultSet.getString("Comment"));
+
+            //Add categories
+            List<Recipe.Category> recipeCategories = new ArrayList<Recipe.Category>();
+            Recipe.Category cat;
+            while (resultSet.next() ) {
+                cat = new Recipe.Category(resultSet.getInt("id")
+                        ,resultSet.getString("value"));
+                recipeCategories.add(cat);
+            }
+            recipe.setCategories(recipeCategories);
+
             //Cleanup
             resultSet.close();
             stmt.close();
@@ -242,7 +255,6 @@ public class DbConnector {
 
         return null;
     }
-
     public List<Recipe.Category> selectRecipeCategories(int recipeId){
         try {
             Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
@@ -307,5 +319,38 @@ public class DbConnector {
         }
         return null;
     }
+    public void updateRecipeRating(int rating, Recipe recipe, int userId){
+        String queryString = "call setUserRating(" + rating + "," + recipe.id + "," + userId + ");";
+        CachedRowSet result = selectQuery(queryString);
+
+        if (result == null) return;
+
+        try {
+            result.next();
+            recipe.setAverageRating(result.getFloat("averageRating"));
+            recipe.setRatingCount(result.getInt("ratingCount"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setUserFavorite(Recipe recipe, int userId){
+        String queryString = "call setUserFavorite(" + recipe.id + "," + userId + ");";
+        createOrUpdateQuery(queryString);
+
+        recipe.isFavorite = true;
+    }
+
+    public void deleteUserFavorite(Recipe recipe, int userId){
+        String queryString = "call deleteUserFavorite(" + recipe.id + "," + userId + ");";
+        createOrUpdateQuery(queryString);
+
+        recipe.isFavorite = false;
+    }
+    public void setComments(Recipe recipe, int userId){
+        String queryString = "call setComments(\"" + recipe.comments + "\"," + recipe.id + "," + userId + ");";
+        createOrUpdateQuery(queryString);
+    }
+
 }
 

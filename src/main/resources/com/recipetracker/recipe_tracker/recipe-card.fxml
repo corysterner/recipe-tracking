@@ -10,12 +10,12 @@
    <children>
       <VBox layoutX="10.0" layoutY="5.0" onMouseClicked="#updateSingleRecipe" prefHeight="100.0" prefWidth="455.0" style="-fx-background-color: #d1f6ff; -fx-background-radius: 10px;">
          <children>
-            <Label fx:id="recipeName" onMouseClicked="#updateSingleRecipe" prefHeight="35.0" prefWidth="747.0" text="RecipeName">
+            <Label fx:id="recipeName" prefHeight="35.0" prefWidth="747.0" text="RecipeName">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label fx:id="recipeDescription" alignment="TOP_LEFT" layoutX="25.0" layoutY="5.0" onMouseClicked="#updateSingleRecipe" prefHeight="45.0" prefWidth="561.0" text="Label" wrapText="true" />
+            <Label fx:id="recipeDescription" alignment="TOP_LEFT" layoutX="25.0" layoutY="5.0" prefHeight="45.0" prefWidth="561.0" text="Label" wrapText="true" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
