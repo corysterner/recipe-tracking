@@ -144,7 +144,6 @@ public class EditModalController implements Initializable {
         String size = sizeText.getText();
         Integer serving = Integer.valueOf(servingsText.getText());
         String instructions = instructionsText.getText();
-        Integer authorId = userId;
 
         String queryString = "UPDATE recipes SET DatePublished=\'"+datePublished+"\', PrepTime="+prepTime+", " +
                 "CookTime="+cookTime+", TotalTime="+totalTime+", Calories="+calories+", Name=\'"+name+"\', " +
