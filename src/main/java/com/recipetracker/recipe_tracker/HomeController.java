@@ -95,7 +95,6 @@ public class HomeController implements Initializable {
         availableOrderBy = FXCollections.observableList(orderList);
         orderByFilter.setItems(availableOrderBy);
 
-        toggleFavorite.setStyle("-fx-base: gold;");
     }
 
     private class CategoryConverter extends StringConverter<Recipe.Category> {
