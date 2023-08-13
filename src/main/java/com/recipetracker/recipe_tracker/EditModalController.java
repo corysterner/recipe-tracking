@@ -75,7 +75,7 @@ public class EditModalController implements Initializable {
                     "cookTime," +
                     "calories," +
                     "serving,"+
-                    "REPLACE(REPLACE(REPLACE(REPLACE(ingredients,',', '\\n'),\"'\",''),'[',' '),']','') AS ingredients,"+
+                    "REPLACE(REPLACE(REPLACE(REPLACE(ingredientAmount,',', '\\n'),\"'\",''),'[',' '),']','') AS ingredients,"+
                     "size,"+
                     "REPLACE(REPLACE(REPLACE(instructions,\"', '\", '\\n'),'[',' '),']','') AS instructions " +
                     "from recipes where RecipeId="+recipeId;
@@ -144,11 +144,10 @@ public class EditModalController implements Initializable {
         String size = sizeText.getText();
         Integer serving = Integer.valueOf(servingsText.getText());
         String instructions = instructionsText.getText();
-        Integer authorId = userId;
 
         String queryString = "UPDATE recipes SET DatePublished=\'"+datePublished+"\', PrepTime="+prepTime+", " +
                 "CookTime="+cookTime+", TotalTime="+totalTime+", Calories="+calories+", Name=\'"+name+"\', " +
-               "Description=\'"+description+"\', ingredients=\'"+ingredientAmount+"\', size=\'"+size+"\', Instructions=\'"
+               "Description=\'"+description+"\', ingredientAmount=\'"+ingredientAmount+"\', size=\'"+size+"\', Instructions=\'"
                 +instructions+"\' , serving="+serving+" where recipeId="+recipeId;
 
         DbConnector.getDbConnector().createOrUpdateQuery(queryString);
@@ -172,9 +171,9 @@ public class EditModalController implements Initializable {
             queryString = "INSERT INTO recipecategory (RecipeId, CategoryId) VALUES " + valuesString;
             DbConnector.getDbConnector().createOrUpdateQuery(queryString);
         }
-
         Stage stage = (Stage) saveButton.getScene().getWindow();
         stage.close();
+
     }
 
     public void cancelAndCloseEdit(ActionEvent actionEvent) {
