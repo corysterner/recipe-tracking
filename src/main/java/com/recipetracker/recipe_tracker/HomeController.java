@@ -84,7 +84,6 @@ public class HomeController implements Initializable {
         availableRatings = FXCollections.observableList(ratingList);
         ratingFilter.setItems(availableRatings);
 
-        toggleFavorite.setStyle("-fx-base: gold;");
     }
 
     private class CategoryConverter extends StringConverter<Recipe.Category> {
@@ -177,6 +176,9 @@ public class HomeController implements Initializable {
         singleRecipeTitle.setText(recipe.name);
         recipeDescription.setText(recipe.description);
         toggleFavorite.setSelected(recipe.isFavorite);
+        if (recipe.isFavorite) toggleFavorite.setStyle("-fx-base: gold;");
+        else toggleFavorite.setStyle("");
+
         Platform.runLater(() ->{
             ratingBar.setRating(recipe.getUserRating() == 0 ? recipe.getRatingAvg() : recipe.getUserRating());
         });
@@ -244,9 +246,11 @@ public class HomeController implements Initializable {
 
         if (currentRecipe.toggleFavorite()){
             DbConnector.getDbConnector().setUserFavorite(currentRecipe, this.userId);
+            toggleFavorite.setStyle("-fx-base: gold;");
         }
         else{
             DbConnector.getDbConnector().deleteUserFavorite(currentRecipe, this.userId);
+            toggleFavorite.setStyle("");
         }
     }
     public void saveComments(Event event){
