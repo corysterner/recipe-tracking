@@ -28,10 +28,12 @@ public class HomeController implements Initializable {
     Integer userId = 0;
     Recipe currentRecipe;
     public TextField searchTextAllRecipes;
+    public Label userName;
     public ComboBox<Recipe.Category> categoryFilter;
-    public ComboBox<Integer> ratingFilter;
-    public ComboBox<Integer> timeFilter;
-    public ComboBox<Integer> caloriesFilter;
+    public ComboBox<String> ratingFilter;
+    public ComboBox<String> timeFilter;
+    public ComboBox<String> caloriesFilter;
+    public ComboBox<String> orderByFilter;
     public Pagination allRecipesPagination;
     public Pagination myRecipesPagination;
     public Pagination myFavoritesPagination;
@@ -53,16 +55,19 @@ public class HomeController implements Initializable {
     public ToggleButton toggleFavorite = new ToggleButton("Favorite");
     public TextArea comments;
 
+    public Button editRecipe;
 
     List<Recipe.Category> allCatValues = new ArrayList<>();
     ObservableList<Recipe.Category> availableCategories;
-    List<Integer> timeRangeList = new ArrayList<>();
-    ObservableList<Integer> availableTime;
-    List<Integer> caloriesRangeList = new ArrayList<>();
-    ObservableList<Integer> availableCalories;
+    List<String> timeRangeList = new ArrayList<>();
+    ObservableList<String> availableTime;
+    List<String> caloriesRangeList = new ArrayList<>();
+    ObservableList<String> availableCalories;
 
-    List<Integer> ratingList = new ArrayList<>();
-    ObservableList<Integer> availableRatings;
+    List<String> ratingList = new ArrayList<>();
+    ObservableList<String> availableRatings;
+    List<String> orderList  = new ArrayList<>();
+    ObservableList<String > availableOrderBy;
 
     public void initialize(URL fxmlFileLocation, ResourceBundle resources){
         // Get all category values and initialize the SearchableComboBox
@@ -71,6 +76,8 @@ public class HomeController implements Initializable {
         availableCategories = FXCollections.observableList(allCatValues);
         categoryFilter.setConverter(new CategoryConverter());
         categoryFilter.setItems(availableCategories);
+
+        editRecipe.setVisible(false);
 
         timeRangeList = getTimeRangeList();
         availableTime = FXCollections.observableList(timeRangeList);
@@ -84,6 +91,11 @@ public class HomeController implements Initializable {
         availableRatings = FXCollections.observableList(ratingList);
         ratingFilter.setItems(availableRatings);
 
+        orderList =getOrderList();
+        availableOrderBy = FXCollections.observableList(orderList);
+        orderByFilter.setItems(availableOrderBy);
+
+        toggleFavorite.setStyle("-fx-base: gold;");
     }
 
     private class CategoryConverter extends StringConverter<Recipe.Category> {
@@ -115,13 +127,13 @@ public class HomeController implements Initializable {
         // TODO: see if getValue() is the right way to get these values - if getValue() returns null, there
         //      seems to be an exception
 
-        recipeList.performRecipeSearch(20, "name",
+        recipeList.performRecipeSearch(20, orderByFilter.getValue(),
                 searchTextAllRecipes.getText() == null ? "" : searchTextAllRecipes.getText(),
                 categoryFilter.getValue() == null ? 0 : categoryFilter.getValue().getCategoryId(),
-                ratingFilter.getValue() == null ? 0 : ratingFilter.getValue(),
-                timeFilter.getValue() == null ? 0 : timeFilter.getValue(),
-                caloriesFilter.getValue() == null ? 0 : caloriesFilter.getValue(),
-                -1, false, false);
+                ratingFilter.getValue(),
+                timeFilter.getValue(),
+                caloriesFilter.getValue(),
+                -1, false, false,pageIndex);
 
         // return the Scrollpane populated with all of the recipe cards
         return buildScrollPaneOfRecipes(recipeList);
@@ -134,8 +146,8 @@ public class HomeController implements Initializable {
         // Populate favorite list
 
         recipeList.performRecipeSearch(20, "name",
-                "", 0, 0, 0, 0,
-                this.userId, true, false);
+                "", 0, null, null, null,
+                this.userId, true, false,0);
 
         // return the Scrollpane populated with favorites
         return buildScrollPaneOfRecipes(recipeList);
@@ -149,8 +161,8 @@ public class HomeController implements Initializable {
         // Populate recipe list with user recipes
 
         recipeList.performRecipeSearch(20, "name",
-                "", 0, 0, 0, 0,
-                this.userId, false, true);
+                "", 0, null, null, null,
+                this.userId, false, true,0);
 
         // return the Scrollpane populated with favorites
         return buildScrollPaneOfRecipes(recipeList);
@@ -172,6 +184,12 @@ public class HomeController implements Initializable {
         // Update the right side scroll pane with this recipe's info
         Recipe recipe = DbConnector.dbConnector.selectQueryFullRecipe(recipeId, this.userId);
         currentRecipe = recipe;
+        //Recipe recipe = DbConnector.dbConnector.selectQueryFullRecipe(recipeId);
+        if ((recipeId > 0) && (userId==recipe.authorId)){
+            editRecipe.setVisible(true);
+        }else{
+            editRecipe.setVisible(false);
+        }
 
         singleRecipeTitle.setText(recipe.name);
         recipeDescription.setText(recipe.description);
@@ -284,7 +302,7 @@ public class HomeController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(
                     EditModalController.class.getResource("edit-modal.fxml"));
-            EditModalController editModalController = new EditModalController(400);
+            EditModalController editModalController = new EditModalController(this.currentRecipe.id);
             loader.setController(editModalController);
             root = loader.load();
         } catch (IOException e) {
@@ -322,26 +340,35 @@ public class HomeController implements Initializable {
         return scrollPane;
     }
 
-    public ArrayList<Integer> getTimeRangeList(){
-        ArrayList<Integer> result = new ArrayList<>();
-        List<Integer> integerList = Arrays.asList(0, 15, 30, 45, 60, 120);
+    public ArrayList<String> getTimeRangeList(){
+        ArrayList<String> result = new ArrayList<>();
+        List<String> stringList = Arrays.asList("No Time Limit", "Less than 30 min", "Less than 45 min",
+                "Less than 60 min","Less than 120 min", "Less than 180 min");
+        result.addAll(stringList);
+        return result;
+    }
+    public ArrayList<String> getCaloriesRangeList(){
+        ArrayList<String> result = new ArrayList<>();
+        List<String> integerList = Arrays.asList("No Calorie Limit", "Less than 100", "Less than 250",
+                "Less than 500","Less than 1000", "Less than 1500");
         result.addAll(integerList);
         return result;
     }
-    public ArrayList<Integer> getCaloriesRangeList(){
-        ArrayList<Integer> result = new ArrayList<>();
-        List<Integer> integerList = Arrays.asList(0, 100, 250, 500, 1000, 1500);
+    public ArrayList<String> getRatingList(){
+        ArrayList<String> result = new ArrayList<>();
+        List<String> integerList = Arrays.asList("No Rating Limit", "More Than 1 Star","More Than 2 Star","More Than 3 Star",
+                "More Than 4 Star","More Than 5 Star");
         result.addAll(integerList);
         return result;
     }
-    public ArrayList<Integer> getRatingList(){
-        ArrayList<Integer> result = new ArrayList<>();
-        List<Integer> integerList = Arrays.asList(0, 1, 2, 3, 4, 5);
+    public ArrayList<String> getOrderList(){
+        ArrayList<String> result = new ArrayList<>();
+        List<String> integerList = Arrays.asList("name","cookTime","totalTime", "calories", "serving");
         result.addAll(integerList);
         return result;
     }
     public void setUserId(Integer userId) {
         this.userId = userId;
-        searchTextAllRecipes.setText(userId.toString());
+        userName.setText(userId.toString());
     }
 }

@@ -1,27 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Pagination?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.shape.Rectangle?>
-<?import javafx.scene.text.Font?>
-<?import org.controlsfx.control.Rating?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import org.controlsfx.control.*?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.recipetracker.recipe_tracker.HomeController">
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.recipetracker.recipe_tracker.HomeController">
    <children>
       <Button layoutX="650.0" layoutY="50.0" mnemonicParsing="false" onAction="#openCreateModal" style="-fx-background-color: green;" text="+ Create" textFill="WHITE" />
       <ScrollPane fitToWidth="true" layoutX="650.0" layoutY="100.0" prefHeight="650.0" prefWidth="500.0" style="-fx-border-color: #D3D3D3;">
@@ -147,6 +133,7 @@
                         <Font name="System Italic" size="10.0" />
                      </font>
                   </Label>
+                  <Button fx:id="editRecipe" layoutY="1.0" mnemonicParsing="false" onAction="#openEditModal" text="Edit" />
                </children>
             </AnchorPane>
         </content>
@@ -163,11 +150,11 @@
                         <ComboBox fx:id="timeFilter" layoutX="305.0" layoutY="50.0" prefWidth="100.0" promptText="Time" />
                         <ComboBox fx:id="caloriesFilter" layoutX="415.0" layoutY="50.0" prefWidth="100.0" promptText="Calories" />
                         <Button layoutX="25.0" layoutY="50.0" mnemonicParsing="false" onAction="#searchAllRecipes" text="Search" />
-                        <Pagination fx:id="allRecipesPagination" layoutX="25.0" layoutY="100.0" maxPageIndicatorCount="1" pageCount="1" prefHeight="550.0" prefWidth="500.0" style="-fx-border-width: 0px;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0">
+                        <Pagination fx:id="allRecipesPagination" layoutX="25.0" layoutY="100.0" pageCount="10" prefHeight="550.0" prefWidth="500.0" style="-fx-border-width: 0px;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0">
                            <opaqueInsets>
                               <Insets />
                            </opaqueInsets></Pagination>
-                        <ComboBox fx:id="timeFilter1" layoutX="125.0" layoutY="50.0" prefWidth="100.0" promptText="Sort By" />
+                        <ComboBox fx:id="orderByFilter" layoutX="125.0" layoutY="50.0" prefWidth="100.0" promptText="Sort By" />
                      </children></AnchorPane>
                 </content>
             </Tab>
@@ -198,5 +185,6 @@
         </tabs>
       </TabPane>
       <Button layoutX="1087.0" layoutY="50.0" mnemonicParsing="false" style="-fx-background-color: none;" text="Sign Out" textFill="#0000ee" />
+      <Label fx:id="userName" layoutX="50.0" layoutY="14.0" prefHeight="18.0" prefWidth="235.0" text="Welcome" />
    </children>
 </AnchorPane>
