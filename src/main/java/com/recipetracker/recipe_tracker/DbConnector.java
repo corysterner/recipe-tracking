@@ -1,6 +1,10 @@
 package com.recipetracker.recipe_tracker;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.sql.rowset.*;
 
 public class DbConnector {
@@ -158,31 +162,31 @@ public class DbConnector {
             crs.populate(result);
 
             con.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e);
         }
 
         return crs;
-
+    }
     public ArrayList<Recipe.Category> selectQueryCategory(){
         try {
             Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
             Statement stmt = con.createStatement();
             ResultSet resultSet = stmt.executeQuery("select id,value from categories");
             ResultSetMetaData metaData = resultSet.getMetaData();
-            ArrayList<Recipe.Category> result = new ArrayList();
+            ArrayList<Recipe.Category> result1 = new ArrayList();
             Recipe.Category cat = null;
             while (resultSet.next() ) {
 
                 cat = new Recipe.Category(0,"");
                 cat.id=resultSet.getInt("id");
                 cat.value=resultSet.getString("value");
-                result.add(cat);
+                result1.add(cat);
             }
             resultSet.close();
             stmt.close();
             con.close();
-            return result;
+            return result1;
         } catch (SQLException e){
             System.out.println(e);
         }
