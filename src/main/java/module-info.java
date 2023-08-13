@@ -11,5 +11,6 @@ module com.recipetracker.recipe_tracker {
     requires mysql.connector.j;
     requires org.apache.commons.codec;
     requires java.sql.rowset;
+    requires org.apache.commons.lang3;
     exports com.recipetracker.recipe_tracker;
 }

@@ -25,7 +25,7 @@ import java.util.ResourceBundle;
 
 public class HomeController implements Initializable {
     Integer userId = 0;
-    Integer recipeId = -1;
+    Recipe currentRecipe;
     public TextField searchTextAllRecipes;
     public Label userName;
     public ComboBox<Recipe.Category> categoryFilter;
@@ -51,6 +51,9 @@ public class HomeController implements Initializable {
     public Label categoryListLabel;
     public Rating ratingBar;
     public Label ratingLabel;
+    public ToggleButton toggleFavorite = new ToggleButton("Favorite");
+    public TextArea comments;
+
     public Button editRecipe;
 
     List<Recipe.Category> allCatValues = new ArrayList<>();
@@ -90,6 +93,8 @@ public class HomeController implements Initializable {
         orderList =getOrderList();
         availableOrderBy = FXCollections.observableList(orderList);
         orderByFilter.setItems(availableOrderBy);
+
+        toggleFavorite.setStyle("-fx-base: gold;");
     }
 
     private class CategoryConverter extends StringConverter<Recipe.Category> {
@@ -173,10 +178,11 @@ public class HomeController implements Initializable {
 
     public void updateSingleRecipe(int recipeId) {
         //Clear Lists
-        this.recipeId=recipeId;
         clearSingleRecipe();
 
         // Update the right side scroll pane with this recipe's info
+        Recipe recipe = DbConnector.dbConnector.selectQueryFullRecipe(recipeId, this.userId);
+        currentRecipe = recipe;
         Recipe recipe = DbConnector.dbConnector.selectQueryFullRecipe(recipeId);
         if ((recipeId > 0) && (userId==recipe.authorId)){
             editRecipe.setVisible(true);}else{
@@ -185,7 +191,12 @@ public class HomeController implements Initializable {
 
         singleRecipeTitle.setText(recipe.name);
         recipeDescription.setText(recipe.description);
-        ratingBar.setRating(recipe.getRatingAvg());
+        toggleFavorite.setSelected(recipe.isFavorite);
+        Platform.runLater(() ->{
+            ratingBar.setRating(recipe.getUserRating() == 0 ? recipe.getRatingAvg() : recipe.getUserRating());
+        });
+        ratingBar.setPartialRating(recipe.getUserRating() == 0);
+        ratingBar.setUpdateOnHover(recipe.getUserRating() == 0);
         ratingLabel.setText(String.format("Avg. Rating of %.1f/5 Over %d Ratings",
                 recipe.getRatingAvg(), recipe.getRatingCount()));
 
@@ -195,27 +206,27 @@ public class HomeController implements Initializable {
         caloriesLabel.setText(Integer.toString(recipe.calories));
 
         //Timing
-        prepTimeLabel.setText(String.format("%d min",recipe.prepTimeMinutes));
-        cookTimeLabel.setText(String.format("%d min",recipe.cookTimeMinutes));
-        totalTimeLabel.setText(String.format("%d min",recipe.totalTimeMinutes));
+        prepTimeLabel.setText(String.format("%d min", recipe.prepTimeMinutes));
+        cookTimeLabel.setText(String.format("%d min", recipe.cookTimeMinutes));
+        totalTimeLabel.setText(String.format("%d min", recipe.totalTimeMinutes));
 
         //Body
         ingredientList.getItems().addAll(recipe.ingredientsList);
-        for (int i = 0; i < recipe.instructionList.size(); i++){
+        for (int i = 0; i < recipe.instructionList.size(); i++) {
             instructionList.getItems().add(
-                    String.format("%d. %s",i + 1,recipe.instructionList.get(i)));
+                    String.format("%d. %s", i + 1, recipe.instructionList.get(i)));
         }
-        for (int i = 0; i < recipe.categories.size(); i++){
+        for (int i = 0; i < recipe.categories.size(); i++) {
             if (i == 0) {
                 categoryListLabel.setText(categoryListLabel.getText() + " " +
                         recipe.categories.get(i).getCategory());
-            }
-            else {
+            } else {
                 categoryListLabel.setText(categoryListLabel.getText() +
                         ", " +
                         recipe.categories.get(i).getCategory());
             }
         }
+        comments.setText(recipe.comments);
 
     }
     private void clearSingleRecipe(){
@@ -223,14 +234,50 @@ public class HomeController implements Initializable {
         instructionList.getItems().clear();
         categoryListLabel.setText("Categories: ");
     }
+    public void updateUserRating(Event event){
+        int rating = (int) Math.ceil(ratingBar.getRating());
+        ratingBar.setUpdateOnHover(false);
+
+        //Set recipe attributes
+        DbConnector.dbConnector.updateRecipeRating(rating, currentRecipe, this.userId);
+        Platform.runLater(() ->{
+            ratingBar.setRating(rating);
+
+        });
+
+        //Update recipe view
+        currentRecipe.setUserRating(rating);
+        ratingLabel.setText(String.format("Avg. Rating of %.1f/5 Over %d Ratings",
+                currentRecipe.getRatingAvg(), currentRecipe.getRatingCount()));
+
+    }
+    public void resetUserRating(Event event){
+        float rating = currentRecipe.getUserRating() == 0 ? currentRecipe.getRatingAvg() : (float) currentRecipe.getUserRating();
+        ratingBar.setRating(rating);
+    }
+    public void toggleFavorite(Event event){
+
+        if (currentRecipe.toggleFavorite()){
+            DbConnector.getDbConnector().setUserFavorite(currentRecipe, this.userId);
+        }
+        else{
+            DbConnector.getDbConnector().deleteUserFavorite(currentRecipe, this.userId);
+        }
+    }
+    public void saveComments(Event event){
+        currentRecipe.setComments(comments.getText());
+        DbConnector.getDbConnector().setComments(currentRecipe, this.userId);
+    }
 
     public void openCreateModal(ActionEvent actionEvent) {
 
         Stage stage = new Stage();
         Parent root = null;
         try {
-            root = FXMLLoader.load(
-                    CreateModalController.class.getResource("create-modal.fxml"));
+            FXMLLoader modalLoader = new FXMLLoader(CreateModalController.class.getResource("create-modal.fxml"));
+            root = modalLoader.load();
+            CreateModalController modalController = modalLoader.getController();
+            modalController.setUser(userId);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

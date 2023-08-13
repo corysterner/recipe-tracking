@@ -1,6 +1,7 @@
 package com.recipetracker.recipe_tracker;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Recipe {
@@ -24,7 +25,8 @@ public class Recipe {
     String description;
     String instructions;
     String ingredients;
-    boolean isFavorite;
+    String comments;
+    boolean isFavorite = false;
     boolean createUser;
 
     // TODO: Build out constructor(s)
@@ -75,8 +77,21 @@ public class Recipe {
         databaseArray = databaseArray.replace("[" + separator,"")
                 .replace(separator + "]","")
                 .replace(", " + separator, "," + separator)
+                .replace("," + separator + separator + ",",",")
                 .replaceAll("\\s+"," ");
-        return Arrays.asList(databaseArray.split(separator + "," + separator));
+        List<String> list = new LinkedList<String>(Arrays.asList(databaseArray.split(separator + "," + separator)));
+        if (list.get(0).equals("")) list.remove(0);
+        return list;
+    }
+    public void setFavorite(boolean isFavorite){
+        this.isFavorite = isFavorite;
+    }
+    public void setComments(String comments){
+        this.comments = comments;
+    }
+    public boolean toggleFavorite(){
+        this.isFavorite = !isFavorite;
+        return this.isFavorite;
     }
 
     public void setCategories(List<Recipe.Category> categories){
@@ -88,7 +103,7 @@ public class Recipe {
     }
     public float getRatingAvg(){
         if (this.rating != null){
-            return this.rating.getRating();
+            return this.rating.getAverageRating();
         }
         return 0;
     }
@@ -99,8 +114,27 @@ public class Recipe {
         }
         return 0;
     }
-
-
+    public int getUserRating() {
+        if (this.rating != null) {
+            return this.rating.getUserRating();
+        }
+        return 0;
+    }
+    public void setUserRating(int userRating){
+        if (this.rating != null) {
+            this.rating.userRating = userRating;
+        }
+    }
+    public void setRatingCount(int count){
+        if (this.rating != null) {
+            this.rating.count = count;
+        }
+    }
+    public void setAverageRating(float averageRating){
+        if (this.rating != null) {
+            this.rating.averageRating = averageRating;
+        }
+    }
     public static class Category{
         int id;
         String value;
@@ -120,16 +154,25 @@ public class Recipe {
 
     public static class Rating{
         int count;
-        float rating;
+        float averageRating;
+        int userRating = 0;
 
-        Rating (float rating, int count){
-            this.rating = rating;
+        Rating (float averageRating, int count, int userRating){
+            this (averageRating, count);
+            this.userRating = userRating;
+        }
+
+        Rating (float averageRating, int count){
+            this.averageRating = averageRating;
             this.count = count;
         }
 
         public int getCount(){return count;}
 
-        public float getRating(){return rating;}
+        public float getAverageRating(){return averageRating;}
+        public int getUserRating(){
+            return this.userRating;
+        };
     }
 
 }

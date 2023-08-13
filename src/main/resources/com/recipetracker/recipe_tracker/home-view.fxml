@@ -14,7 +14,7 @@
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1309.0" prefWidth="500.0">
                <children>
-                  <Label fx:id="singleRecipeTitle" layoutX="16.0" layoutY="14.0" prefHeight="80.0" prefWidth="450.0" text="Select Recipe from List" wrapText="true">
+                  <Label fx:id="singleRecipeTitle" alignment="CENTER" layoutX="16.0" layoutY="14.0" maxHeight="80.0" prefHeight="80.0" prefWidth="450.0" text="Select Recipe from List" textAlignment="CENTER">
                      <font>
                         <Font size="24.0" />
                      </font>
@@ -27,7 +27,7 @@
                      <font>
                         <Font name="System Bold Italic" size="14.0" />
                      </font></Label>
-                  <Rating fx:id="ratingBar" layoutX="31.0" layoutY="177.0" partialRating="true" prefHeight="33.0" prefWidth="174.0" AnchorPane.leftAnchor="31.0" />
+                  <Rating fx:id="ratingBar" layoutX="31.0" layoutY="177.0" onMouseClicked="#updateUserRating" onMouseExited="#resetUserRating" partialRating="true" prefHeight="33.0" prefWidth="174.0" updateOnHover="true" AnchorPane.leftAnchor="31.0" />
                   <ListView fx:id="ingredientList" layoutX="10.0" layoutY="316.0" prefHeight="116.0" prefWidth="455.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
                   <TextArea fx:id="recipeDescription" editable="false" layoutX="16.0" layoutY="79.0" maxWidth="-Infinity" prefHeight="90.0" prefWidth="463.0" wrapText="true" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
                   <Separator layoutX="10.0" layoutY="276.0" prefHeight="9.0" prefWidth="468.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
@@ -120,9 +120,9 @@
                      </font>
                   </Label>
                   <Separator layoutX="6.0" layoutY="231.0" prefHeight="9.0" prefWidth="468.0" />
-                  <ToggleButton layoutX="389.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="98.0" text="Favorite" AnchorPane.rightAnchor="10.0" />
+                  <ToggleButton fx:id="toggleFavorite" layoutX="389.0" layoutY="14.0" mnemonicParsing="false" onAction="#toggleFavorite" prefHeight="25.0" prefWidth="63.0" text="Favorite" AnchorPane.rightAnchor="10.0" />
                   <Separator layoutX="9.0" layoutY="640.0" prefWidth="200.0" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="11.0" />
-                  <Button layoutX="393.33333333333337" layoutY="892.0" mnemonicParsing="false" prefWidth="79.0" text="Save" AnchorPane.rightAnchor="10.0" />
+                  <Button fx:id="saveCommentButton" layoutX="393.33333333333337" layoutY="892.0" mnemonicParsing="false" onAction="#saveComments" prefWidth="79.0" text="Save" AnchorPane.rightAnchor="10.0" />
                   <Label layoutX="23.0" layoutY="647.0" prefHeight="38.0" text="Comments:" AnchorPane.leftAnchor="12.0">
                      <font>
                         <Font name="System Bold Italic" size="14.0" />
