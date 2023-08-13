@@ -254,6 +254,7 @@ public class DbConnector {
                     resultSet.getInt("ratingCount"),
                     resultSet.getInt("userRating"));
             recipe.setRating(rating);
+
             //Add comments
             recipe.setComments(resultSet.getString("Comment"));
 
