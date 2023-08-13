@@ -213,8 +213,10 @@ public class HomeController implements Initializable {
         Stage stage = new Stage();
         Parent root = null;
         try {
-            root = FXMLLoader.load(
-                    CreateModalController.class.getResource("create-modal.fxml"));
+            FXMLLoader modalLoader = new FXMLLoader(CreateModalController.class.getResource("create-modal.fxml"));
+            root = modalLoader.load();
+            CreateModalController modalController = modalLoader.getController();
+            modalController.setUser(userId);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
