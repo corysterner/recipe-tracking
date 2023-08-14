@@ -184,7 +184,6 @@
           </Tab>
         </tabs>
       </TabPane>
-      <Button layoutX="1087.0" layoutY="50.0" mnemonicParsing="false" style="-fx-background-color: none;" text="Sign Out" textFill="#0000ee" />
-      <Label fx:id="userName" layoutX="50.0" layoutY="14.0" prefHeight="18.0" prefWidth="235.0" text="Welcome" />
+      <Button layoutX="1087.0" layoutY="50.0" mnemonicParsing="false" onAction="#signOut" style="-fx-background-color: none;" text="Sign Out" textFill="#0000ee" />
    </children>
 </AnchorPane>

@@ -370,6 +370,26 @@ public class HomeController implements Initializable {
     }
     public void setUserId(Integer userId) {
         this.userId = userId;
-        userName.setText(userId.toString());
+    }
+
+    /**
+     * Removes the userId, signing them out, and then redirects to the login screen
+     * @param actionEvent
+     */
+    public void signOut(ActionEvent actionEvent) {
+        userId = -1;
+
+        Parent root;
+
+        try {
+            root = FXMLLoader.load(getClass().getResource("login-view.fxml"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        Scene scene = new Scene(root, 1200, 800);
+        Stage stage = (Stage) searchTextAllRecipes.getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
     }
 }
