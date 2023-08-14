@@ -261,6 +261,13 @@ public class DbConnector {
             //Add categories
             List<Recipe.Category> recipeCategories = new ArrayList<Recipe.Category>();
             Recipe.Category cat;
+
+            // Need to add the first category from the current row
+            cat = new Recipe.Category(resultSet.getInt("id")
+                    ,resultSet.getString("value"));
+            recipeCategories.add(cat);
+
+            // Add any remaining categories
             while (resultSet.next() ) {
                 cat = new Recipe.Category(resultSet.getInt("id")
                         ,resultSet.getString("value"));

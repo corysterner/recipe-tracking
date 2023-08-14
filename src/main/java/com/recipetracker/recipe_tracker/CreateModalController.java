@@ -131,7 +131,7 @@ public class CreateModalController implements Initializable {
         String name = nameText.getText();
         String description = descriptionText.getText();
         String ingredientAmount = ingredientsText.getText();
-        Integer size = Integer.valueOf(sizeText.getText());
+        String size = sizeText.getText();
         Integer serving = Integer.valueOf(servingsText.getText());
         String instructions = instructionsText.getText();
         Integer authorId = userId;
