@@ -219,6 +219,7 @@ public class DbConnector {
     }
 
     public Recipe selectQueryFullRecipe(int recipeId, int userId){
+        if (recipeId==0) return null;
         try {
             Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
             Statement stmt = con.createStatement();
@@ -227,7 +228,7 @@ public class DbConnector {
                     "call getFullRecipe(" + recipeId + ", " + userId + ");"
             );
 
-            resultSet.next();
+            if (!resultSet.next()){return null;};
 
             //Create a new recipe
             Recipe recipe = new Recipe(

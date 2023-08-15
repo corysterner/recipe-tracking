@@ -56,6 +56,7 @@ public class HomeController implements Initializable {
     public TextArea comments;
 
     public Button editRecipe;
+    public Button deleteRecipe;
 
     List<Recipe.Category> allCatValues = new ArrayList<>();
     ObservableList<Recipe.Category> availableCategories;
@@ -78,6 +79,7 @@ public class HomeController implements Initializable {
         categoryFilter.setItems(availableCategories);
 
         editRecipe.setVisible(false);
+        deleteRecipe.setVisible(false);
 
         timeRangeList = getTimeRangeList();
         availableTime = FXCollections.observableList(timeRangeList);
@@ -179,15 +181,19 @@ public class HomeController implements Initializable {
     public void updateSingleRecipe(int recipeId) {
         //Clear Lists
         clearSingleRecipe();
+        if (recipeId==0) {return;}
 
         // Update the right side scroll pane with this recipe's info
         Recipe recipe = DbConnector.dbConnector.selectQueryFullRecipe(recipeId, this.userId);
+        if (recipe==null) {return;}
         currentRecipe = recipe;
         //Recipe recipe = DbConnector.dbConnector.selectQueryFullRecipe(recipeId);
         if ((recipeId > 0) && (userId==recipe.authorId)){
             editRecipe.setVisible(true);
+            deleteRecipe.setVisible(true);
         }else{
             editRecipe.setVisible(false);
+            deleteRecipe.setVisible(false);
         }
 
         singleRecipeTitle.setText(recipe.name);
@@ -315,7 +321,25 @@ public class HomeController implements Initializable {
         //update single recipe
         if (currentRecipe.id!=0) {updateSingleRecipe(currentRecipe.id);}
     }
+    public void openDeleteModal(ActionEvent actionEvent) {
 
+        Stage stage = new Stage();
+        Parent root = null;
+        try {
+            FXMLLoader loader2 = new FXMLLoader(
+                    deleteModalController.class.getResource("Delete-view.fxml"));
+            deleteModalController delete = new deleteModalController(this.currentRecipe.id);
+            loader2.setController(delete);
+            root = loader2.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage.setScene(new Scene(root));
+        stage.setTitle("Delete Recipe");
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(allRecipesPagination.getScene().getWindow());
+        stage.showAndWait();
+    }
     /**
      * Builds a Vbox of all the recipes in the list in the order
      * they're added to the list

@@ -133,7 +133,8 @@
                         <Font name="System Italic" size="10.0" />
                      </font>
                   </Label>
-                  <Button fx:id="editRecipe" layoutY="1.0" mnemonicParsing="false" onAction="#openEditModal" text="Edit" />
+                  <Button fx:id="editRecipe" layoutX="67.0" layoutY="14.0" mnemonicParsing="false" onAction="#openEditModal" prefHeight="26.0" prefWidth="49.0" text="Edit" />
+                  <Button fx:id="deleteRecipe" layoutX="5.0" layoutY="14.0" mnemonicParsing="false" onAction="#openDeleteModal" prefHeight="26.0" prefWidth="51.0" text="Delete" />
                </children>
             </AnchorPane>
         </content>
