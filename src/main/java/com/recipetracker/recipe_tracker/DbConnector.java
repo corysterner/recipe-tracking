@@ -38,7 +38,11 @@ public class DbConnector {
     // The main DbConnector
     public static DbConnector dbConnector;
 
-    // TODO: Figure out if this should return something we check - a success code?
+    /**
+     * Runs a create or update query where there is no expected return value (or the
+     * return value is not needed).
+     * @param queryString - The create or update query to run.
+     */
     public void createOrUpdateQuery(String queryString){
         try {
             Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
@@ -49,7 +53,13 @@ public class DbConnector {
             System.out.println(e);
         }
     }
-  
+
+    /**
+     * Runs a tailored select query for Recipes and returns an ArrayList of recipes for the
+     * home page search functionality.
+     * @param queryString
+     * @return
+     */
     public ArrayList<Recipe> selectQueryShort(String queryString){
         try {
             Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
@@ -89,13 +99,13 @@ public class DbConnector {
     }
 
     /**
-     * Select query.
+     * Generic select query. Runs the provided query string as a select statement.
      *
      * Returns a CachedRowSet (since the original ResultSet will be lost after the
      * connection is closed).
      *
-     * @param queryString
-     * @return
+     * @param queryString the select query to run.
+     * @return a CachedRowSet of the results.
      */
     public CachedRowSet selectQuery(String queryString){
         ResultSet result = null;
@@ -104,7 +114,8 @@ public class DbConnector {
         try {
             Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
             Statement stmt = con.createStatement();
-            // TODO: This is probably a different call(s) that actually return a value
+
+            // Run the query
             result = stmt.executeQuery(queryString);
 
             crs = RowSetProvider.newFactory().createCachedRowSet();
@@ -116,26 +127,6 @@ public class DbConnector {
         } catch (SQLException e){
             System.out.println(e);
         }
-
-        /*
-        List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
-        Map<String, Object> row = null;
-
-        try {
-            ResultSetMetaData metaData = result.getMetaData();
-            Integer columnCount = metaData.getColumnCount();
-
-            while (result.next()) {
-                row = new HashMap<String, Object>();
-                for (int i = 1; i <= columnCount; i++) {
-                    row.put(metaData.getColumnName(i), result.getObject(i));
-                }
-                resultList.add(row);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        */
 
         return crs;
     }
@@ -169,6 +160,11 @@ public class DbConnector {
 
         return crs;
     }
+
+    /**
+     * Pulls all categories from the databaase.
+     * @return an ArrayList of Recipe.Category objects.
+     */
     public ArrayList<Recipe.Category> selectQueryCategory(){
         try {
             Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
@@ -193,6 +189,12 @@ public class DbConnector {
         }
         return null;
     }
+
+    /**
+     * Selects the categories for a specific recipe.
+     * @param recipeId - the recipe to pull categories for.
+     * @return an ArrayList of Recipe.Category objects.
+     */
     public ArrayList<Recipe.Category> selectQueryCategory(int recipeId){
         try {
             Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
@@ -218,6 +220,12 @@ public class DbConnector {
         return null;
     }
 
+    /**
+     * Queries the database for an entire recipe's data.
+     * @param recipeId - the recipe to pull
+     * @param userId - the user Id of the person running the app to pull in user-specific values, such as favorites
+     * @return a Recipe object populated with all values.
+     */
     public Recipe selectQueryFullRecipe(int recipeId, int userId){
         if (recipeId==0) return null;
         try {
@@ -289,6 +297,12 @@ public class DbConnector {
 
         return null;
     }
+
+    /**
+     * Selects the categories for a specific recipe.
+     * @param recipeId - the recipe to pull categories for.
+     * @return a List of Recipe.Category objects.
+     */
     public List<Recipe.Category> selectRecipeCategories(int recipeId){
         try {
             Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
@@ -326,6 +340,11 @@ public class DbConnector {
 
     }
 
+    /**
+     * Pulls the current average rating for a recipe.
+     * @param recipeId - the recipe to get the average for.
+     * @return a Recipe.Rating object containing the average and count of ratings.
+     */
     public Recipe.Rating selectRecipeRating(int recipeId){
         try {
             Connection con = DriverManager.getConnection(DB_LOCATION, DB_USER_ID, DB_PASSWORD);
@@ -353,6 +372,13 @@ public class DbConnector {
         }
         return null;
     }
+
+    /**
+     * Files the new rating value to the ratings table in the database.
+     * @param rating The rating for the recipe
+     * @param recipe The recipe being rated
+     * @param userId The user making the rating
+     */
     public void updateRecipeRating(int rating, Recipe recipe, int userId){
         String queryString = "call setUserRating(" + rating + "," + recipe.id + "," + userId + ");";
         CachedRowSet result = selectQuery(queryString);
@@ -368,6 +394,11 @@ public class DbConnector {
         }
     }
 
+    /**
+     * Sets a favorite recipe for the user in the database, based on the passed in recipe id
+     * @param recipe The recipe being favorited
+     * @param userId The user making the favorite
+     */
     public void setUserFavorite(Recipe recipe, int userId){
         String queryString = "call setUserFavorite(" + recipe.id + "," + userId + ");";
         createOrUpdateQuery(queryString);
@@ -375,12 +406,23 @@ public class DbConnector {
         recipe.isFavorite = true;
     }
 
+    /**
+     * Deletes a recipe from the user's favorites in the database based on the passed in user and recipe IDs
+     * @param recipe The recipe for which to remove the favorite
+     * @param userId The user removing the favorite
+     */
     public void deleteUserFavorite(Recipe recipe, int userId){
         String queryString = "call deleteUserFavorite(" + recipe.id + "," + userId + ");";
         createOrUpdateQuery(queryString);
 
         recipe.isFavorite = false;
     }
+
+    /**
+     * Sets the comments value for the recipe in the database and tags it with the provided user.
+     * @param recipe The recipe being commented
+     * @param userId The user making the comment
+     */
     public void setComments(Recipe recipe, int userId){
         String queryString = "call setComments(\"" + recipe.comments + "\"," + recipe.id + "," + userId + ");";
         createOrUpdateQuery(queryString);

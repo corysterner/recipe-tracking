@@ -17,6 +17,11 @@ public class User {
         this.userId = userId;
     }
 
+    /**
+     * Queries the database for the user's salt in order to hash their password
+     * @param email the email for the user
+     * @return the salt as a String
+     */
     public static String getUserSaltStringFromEmail(String email){
         String queryString = "SELECT Salt FROM users\n" +
                 "WHERE Email = '" + email + "'";
@@ -34,8 +39,15 @@ public class User {
         return salt;
     }
 
+    /**
+     * Hashes the user's password given a salt
+     * @param password the entered user's password
+     * @param salt the salt for the user
+     * @return a hashed String using PBEKeySpec
+     */
     public static String hashPassword(String password, byte[] salt) {
 
+        // Hash all the things
         KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 10000, 512);
         SecretKeyFactory factory = null;
         try {

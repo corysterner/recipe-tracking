@@ -55,6 +55,9 @@ public class CreateModalController implements Initializable {
     // Used to populate the SearchableComboBox with the category items
     ObservableList<Recipe.Category> availableCategories;
 
+    /**
+     * Used to initialize the category section UI
+     */
     public void initialize(URL fxmlFileLocation, ResourceBundle resources){
 
         // To give some spacing to the category buttons within the FlowPane
@@ -120,6 +123,11 @@ public class CreateModalController implements Initializable {
 
     }
 
+    /**
+     * Performs save of the recipe to the database and closes the modal.
+     * Returns to the home screen.
+     * @param actionEvent
+     */
     public void saveAndCloseModal(ActionEvent actionEvent) {
 
         // Values: DatePublished, PrepTime, CookTime, TotalTime, Calories, Name, Description, IngredientAmount, size, serving, Instructions, AuthorId
