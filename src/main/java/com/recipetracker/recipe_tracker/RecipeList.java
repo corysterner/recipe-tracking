@@ -15,7 +15,6 @@ public class RecipeList extends ArrayList<Recipe> {
 
     /**
      * Populates RecipeList with recipes given search parameters
-     *
      */
     public void performRecipeSearch(int numberRecipes, String sortBy, String searchString, int category,
                                     String minRating, String maxTime, String maxCalories, int userId, boolean isFavorite,
@@ -60,11 +59,21 @@ public class RecipeList extends ArrayList<Recipe> {
         }
     }
 
+    /**
+     * Sorts the recipe output by a given category value
+     * @param order - order to search by
+     * @return - sort string to add to query
+     */
     public String sort(String order){
         if (order=="name") return order;
         return order+" DESC";
     }
 
+    /**
+     * Extract an integer from a string
+     * @param input
+     * @return
+     */
     public static int extractInteger(String input) {
         int extractedValue = 100000; // Default value in case of failure
 

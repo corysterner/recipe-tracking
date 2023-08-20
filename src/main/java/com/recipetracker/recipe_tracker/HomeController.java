@@ -70,6 +70,11 @@ public class HomeController implements Initializable {
     List<String> orderList  = new ArrayList<>();
     ObservableList<String > availableOrderBy;
 
+    /**
+     * Initializes the home page
+     * @param fxmlFileLocation - file location for the home fxml
+     * @param resources - bundle of resources
+     */
     public void initialize(URL fxmlFileLocation, ResourceBundle resources){
         // Get all category values and initialize the SearchableComboBox
         allCatValues = DbConnector.getDbConnector().selectQueryCategory();
@@ -99,8 +104,15 @@ public class HomeController implements Initializable {
 
     }
 
+    /**
+     * Converts a recipe category to a string and vice versa
+     */
     private class CategoryConverter extends StringConverter<Recipe.Category> {
-
+        /**
+         * Converts a recipe category to a string
+         * @param category - category to convert
+         * @return - string of the category
+         */
         @Override
         public String toString(Recipe.Category category) {
             // Converts category to string of just the category value
@@ -110,6 +122,12 @@ public class HomeController implements Initializable {
                 return "";
             }
         }
+
+        /**
+         * Converts a string to a category
+         * @param s - string to convert
+         * @return - null always
+         */
         @Override
         public Recipe.Category fromString(String s) {
             return null;
@@ -117,7 +135,11 @@ public class HomeController implements Initializable {
     }
 
 
-
+    /**
+     * gets all the pages for pagination on the all recipes search
+     * @param pageIndex - pagination index
+     * @return - scroll pane with the pages for the specified index
+     */
     public ScrollPane getPages(int pageIndex){
 
         // Start a new recipe list
@@ -139,6 +161,12 @@ public class HomeController implements Initializable {
         // return the Scrollpane populated with all of the recipe cards
         return buildScrollPaneOfRecipes(recipeList);
     }
+
+    /**
+     * Create a paginated scroll pane for the favorites tab
+     * @param index - pagination index
+     * @return - scroll pane for the favorites page
+     */
     public ScrollPane getFavoritesPages (int index){
 
         // Start a new recipe list
@@ -154,6 +182,11 @@ public class HomeController implements Initializable {
         return buildScrollPaneOfRecipes(recipeList);
 
     }
+    /**
+     * Create a paginated scroll pane for the my recipes tab
+     * @param index - pagination index
+     * @return - scroll pane for the my recipes page
+     */
     public ScrollPane getUserPages(int index){
 
         // Start a new recipe list
@@ -170,14 +203,30 @@ public class HomeController implements Initializable {
 
     }
 
+    /**
+     * Event to search over all recipes
+     * @param actionEvent - event trigger
+     */
     public void searchAllRecipes(ActionEvent actionEvent) {
         allRecipesPagination.setPageFactory(this::getPages);
     }
 
+    /**
+     * Event to search over user recipes
+     * @param event - event trigger
+     */
     public void getMyRecipes(Event event) {myRecipesPagination.setPageFactory(this::getUserPages);}
 
+    /**
+     * Event to search over user favorites
+     * @param event - event trigger
+     */
     public void getMyFavorites(Event event) {myFavoritesPagination.setPageFactory(this::getFavoritesPages);}
 
+    /**
+     * Function to display a single recipe in the right pane
+     * @param recipeId - recipe ID of recipe to display
+     */
     public void updateSingleRecipe(int recipeId) {
         //Clear Lists
         clearSingleRecipe();
@@ -239,11 +288,20 @@ public class HomeController implements Initializable {
         comments.setText(recipe.comments);
 
     }
+
+    /**
+     * Clear out all of the values from a single recipe
+     */
     private void clearSingleRecipe(){
         ingredientList.getItems().clear();
         instructionList.getItems().clear();
         categoryListLabel.setText("Categories: ");
     }
+
+    /**
+     * Update the user rating for a single recipe
+     * @param event - event
+     */
     public void updateUserRating(Event event){
         int rating = (int) Math.ceil(ratingBar.getRating());
         ratingBar.setUpdateOnHover(false);
@@ -261,10 +319,20 @@ public class HomeController implements Initializable {
                 currentRecipe.getRatingAvg(), currentRecipe.getRatingCount()));
 
     }
+
+    /**
+     * Reset the display rating for a single recipe
+     * @param event - event
+     */
     public void resetUserRating(Event event){
         float rating = currentRecipe.getUserRating() == 0 ? currentRecipe.getRatingAvg() : (float) currentRecipe.getUserRating();
         ratingBar.setRating(rating);
     }
+
+    /**
+     * Action to toggle whether a recipe is a user favorite
+     * @param event - event
+     */
     public void toggleFavorite(Event event){
 
         if (currentRecipe.toggleFavorite()){
@@ -276,11 +344,20 @@ public class HomeController implements Initializable {
             toggleFavorite.setStyle("");
         }
     }
+
+    /**
+     * Tag to save comments to a single recipe
+     * @param event - trigger event
+     */
     public void saveComments(Event event){
         currentRecipe.setComments(comments.getText());
         DbConnector.getDbConnector().setComments(currentRecipe, this.userId);
     }
 
+    /**
+     * Opens the create recipe modal
+     * @param actionEvent - trigger event
+     */
     public void openCreateModal(ActionEvent actionEvent) {
 
         Stage stage = new Stage();
@@ -300,6 +377,10 @@ public class HomeController implements Initializable {
         stage.showAndWait();
     }
 
+    /**
+     * Opens the edit recipe modal
+     * @param actionEvent - trigger event
+     */
     public void openEditModal(ActionEvent actionEvent) {
 
         Stage stage = new Stage();
@@ -321,6 +402,11 @@ public class HomeController implements Initializable {
         //update single recipe
         if (currentRecipe.id!=0) {updateSingleRecipe(currentRecipe.id);}
     }
+
+    /**
+     * Opens the delete modal for a single recipe
+     * @param actionEvent - trigger event
+     */
     public void openDeleteModal(ActionEvent actionEvent) {
 
         Stage stage = new Stage();
@@ -365,6 +451,10 @@ public class HomeController implements Initializable {
         return scrollPane;
     }
 
+    /**
+     * Returns a list of the possible time ranges to search over for the recipes
+     * @return - an array list of time ranges
+     */
     public ArrayList<String> getTimeRangeList(){
         ArrayList<String> result = new ArrayList<>();
         List<String> stringList = Arrays.asList("No Time Limit", "Less than 30 min", "Less than 45 min",
@@ -372,6 +462,11 @@ public class HomeController implements Initializable {
         result.addAll(stringList);
         return result;
     }
+
+    /**
+     * Returns an array list for the ranges of calories value that can be searched over
+     * @return - an array list of maximum calories
+     */
     public ArrayList<String> getCaloriesRangeList(){
         ArrayList<String> result = new ArrayList<>();
         List<String> integerList = Arrays.asList("No Calorie Limit", "Less than 100", "Less than 250",
@@ -379,6 +474,11 @@ public class HomeController implements Initializable {
         result.addAll(integerList);
         return result;
     }
+
+    /**
+     * Returns an array list for the ranges of ratings
+     * @return - an array list of ratings
+     */
     public ArrayList<String> getRatingList(){
         ArrayList<String> result = new ArrayList<>();
         List<String> integerList = Arrays.asList("No Rating Limit", "More Than 1 Star","More Than 2 Star","More Than 3 Star",
@@ -386,19 +486,29 @@ public class HomeController implements Initializable {
         result.addAll(integerList);
         return result;
     }
+
+    /**
+     * Returns an array list of values to sort recipes by
+     * @return - an array list of columsn to sort recipes by
+     */
     public ArrayList<String> getOrderList(){
         ArrayList<String> result = new ArrayList<>();
         List<String> integerList = Arrays.asList("name","cookTime","totalTime", "calories", "serving");
         result.addAll(integerList);
         return result;
     }
+
+    /**
+     * Set the userId for the homepage
+     * @param userId - userId of user logged in
+     */
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
     /**
      * Removes the userId, signing them out, and then redirects to the login screen
-     * @param actionEvent
+     * @param actionEvent - trigger event
      */
     public void signOut(ActionEvent actionEvent) {
         userId = -1;
