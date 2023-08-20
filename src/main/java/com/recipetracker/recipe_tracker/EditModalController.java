@@ -18,7 +18,6 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import org.controlsfx.control.SearchableComboBox;
 import java.lang.*;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -28,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
+// Edit a save a single recipe
 public class EditModalController implements Initializable {
     private int recipeId;
     Integer userId = 0;
@@ -53,9 +53,16 @@ public class EditModalController implements Initializable {
 
     // Used to populate the SearchableComboBox with the category items
     ObservableList<Recipe.Category> availableCategories;
+    /**
+     * Sets the recipe ID
+     * @param recipeId
+     */
     public EditModalController(int recipeId) {
         this.recipeId = recipeId;
     }
+    /**
+     * Used to initialize the Edit window UI
+     */
     public void initialize(URL fxmlFileLocation, ResourceBundle resources){
 
         // To give some spacing to the category buttons within the FlowPane
@@ -67,6 +74,8 @@ public class EditModalController implements Initializable {
         availableCategories = FXCollections.observableList(allCatValues);
         categoryComboBox.setConverter(new CategoryConverter());
         categoryComboBox.setItems(availableCategories);
+
+        // Query a recipe from BD
         if (recipeId>0){
             String queryString =" select " +
                     "name," +
@@ -91,12 +100,12 @@ public class EditModalController implements Initializable {
                 servingsText.setText(Integer.toString(results.get(0).serving));
                 sizeText.setText(results.get(0).servingSize);
             }
+            // Query the category values of a recipe from DB.
             selectedCatValues = DbConnector.getDbConnector().selectQueryCategory(recipeId);
             for (int i =0; i < selectedCatValues.size();i++){
                 showCategoryToRecipe(selectedCatValues.get(i));
             }
         }
-
     }
 
     /**
@@ -112,7 +121,6 @@ public class EditModalController implements Initializable {
      * Used by the SearchableComboBox to display the values in a readable manner
      */
     public class CategoryConverter extends StringConverter<Recipe.Category> {
-
         @Override
         public String toString(Recipe.Category category) {
             // Converts category to string of just the category value
@@ -129,7 +137,11 @@ public class EditModalController implements Initializable {
         }
 
     }
-
+    /**
+     * Performs save of the recipe to the database and closes the modal.
+     * Returns to the home screen.
+     * @param actionEvent
+     */
     public void saveAndCloseEdit(ActionEvent actionEvent) {
 
         // Values: DatePublished, PrepTime, CookTime, TotalTime, Calories, Name, Description, IngredientAmount, size, serving, Instructions, AuthorId
@@ -175,7 +187,11 @@ public class EditModalController implements Initializable {
         stage.close();
 
     }
-
+    /**
+     * Closes the modal without saving the recipe
+     * Returns to the home screen.
+     * @param actionEvent
+     */
     public void cancelAndCloseEdit(ActionEvent actionEvent) {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
@@ -235,7 +251,10 @@ public class EditModalController implements Initializable {
         selectedCatValues.add(cat);
         categoryComboBox.setValue(null);
     }
-
+    /**
+     * Displays the recipe categories:
+     * @param Recipe categories
+     */
     public void showCategoryToRecipe(Recipe.Category cat) {
 
         // Get/Add image for the "X" icon
